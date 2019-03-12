@@ -30,7 +30,7 @@
 import Vue from 'vue'
 import CommandListRow from '@/views/command-list/CommandListRow.vue'
 import { Path } from '@/store'
-declare function isDirectory(path: string): Promise<boolean>
+import Git from '@/scripts/Git'
 
 export default Vue.extend({
   name: 'PathListRow',
@@ -58,20 +58,15 @@ export default Vue.extend({
   watch: {
     'rowItem.directory': {
       async handler(v) {
-        this.caution = ''
+        try {
+          if (v) {
+            await new Git(v).status()
+          }
 
-        if (!v) return
-
-        if (!(await isDirectory(v))) {
-          this.caution = 'Not a directory'
-          return
+          this.caution = ''
+        } catch (e) {
+          this.caution = e.message
         }
-
-        // TODO Gitリポジトリ判定
-        // if () {
-        //   this.caution = 'Not a git repository'
-        //   return
-        // }
       },
       immediate: true
     }
