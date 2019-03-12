@@ -29,6 +29,8 @@ const path = require('path')
     app.serveFolder(path.resolve(__dirname, 'dist'))
   }
 
+  await app.exposeFunction('isDirectory', require('./carlo/isDirectory'))
+
   // Navigate to the main page of your app.
   await app.load('index.html')
 })()

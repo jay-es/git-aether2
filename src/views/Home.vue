@@ -1,7 +1,12 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
+    <nav>
+      <router-link to="/command-list">CommandList</router-link> |
+      <router-link to="/path-list">PathList</router-link>
+    </nav>
+
+    <img alt="Vue logo" src="../assets/logo.png" />
+    <HelloWorld msg="Welcome to Your Vue.js + TypeScript App" />
   </div>
 </template>
 
@@ -10,7 +15,7 @@ import Vue from 'vue'
 import HelloWorld from '@/components/HelloWorld.vue' // @ is an alias to /src
 
 export default Vue.extend({
-  name: 'home',
+  name: 'Home',
   components: {
     HelloWorld
   }

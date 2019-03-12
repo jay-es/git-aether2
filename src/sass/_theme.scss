@@ -1,0 +1,53 @@
+.theme-light {
+  $accColor: #4d89c1;
+  --bgColor: #fafafa;
+  --fontColor: #333;
+  --fontColor-deep: #111;
+  --borderColor: #e5e5e5;
+  --linkColor: #{$accColor};
+  --linkColor-hover: #{saturate(darken($accColor, 20%), 20%)};
+  --linkColor-active: #{saturate(darken($accColor, 40%), 40%)};
+
+  --input-bgColor: #{darken(#fff, 0%)};
+  --input-borderColor: #{darken(#e5e5e5, 10%)};
+  --radio-checkedBg: #{lighten($accColor, 5%)};
+  --btn-hover-bgColor: #{rgba($accColor, 0.1)};
+  --btn-active-bgColor: #{rgba($accColor, 0.05)};
+  --btn-active-color: #{desaturate(darken($accColor, 10%), 30%)};
+
+  --diff-fontColor-del: #740000;
+  --diff-fontColor-ins: #001e00;
+  --diff-bgColor: #fff;
+  --diff-bgColor-del: #ffecec;
+  --diff-bgColor-ins: #eaffea;
+  --diff-bgColor-del-word: #f8cbcb;
+  --diff-bgColor-ins-word: #a6f3a6;
+  --diff-bgColor-info: #e5e5e5;
+}
+
+.theme-dark {
+  $accColor: hsl(263, 100%, 77%); // #4ea6ea
+  --bgColor: #252525;
+  --fontColor: #ccc;
+  --fontColor-deep: #eee;
+  --borderColor: #3f3f3f;
+  --linkColor: #{$accColor};
+  --linkColor-hover: #{desaturate(darken($accColor, 10%), 30%)};
+  --linkColor-active: #{desaturate(darken($accColor, 20%), 50%)};
+
+  --input-bgColor: #{darken(#252525, 5%)};
+  --input-borderColor: #{darken(#3f3f3f, 5%)};
+  --radio-checkedBg: #{darken($accColor, 5%)};
+  --btn-hover-bgColor: #{rgba($accColor, 0.1)};
+  --btn-active-bgColor: #{rgba($accColor, 0.05)};
+  --btn-active-color: #{desaturate(darken($accColor, 10%), 30%)};
+
+  --diff-fontColor-del: hsl(10, 100%, 57%); // hsl(10, 71%, 47%) #cc3e22
+  --diff-fontColor-ins: #2c2;
+  --diff-bgColor: #191919;
+  --diff-bgColor-del: #{darken(#511919, 5%)};
+  --diff-bgColor-ins: #{darken(#294c12, 5%)};
+  --diff-bgColor-del-word: #{lighten(#511919, 2%)};
+  --diff-bgColor-ins-word: #{lighten(#294c12, 2%)};
+  --diff-bgColor-info: #3f3f3f;
+}

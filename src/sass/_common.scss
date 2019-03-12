@@ -1,0 +1,129 @@
+* {
+  font-family: 'Helvetica Neue', 'Segoe UI', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+html {
+  min-height: 100%;
+}
+body {
+  margin-bottom: 0;
+  background-color: var(--bgColor);
+  font-size: 13px;
+  color: var(--fontColor);
+
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+    background-color: hsla(0, 0, 50, 0.1);
+    border-radius: 3px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: hsla(0, 0, 60, 0.4);
+    border-radius: 3px;
+  }
+  ::-webkit-scrollbar-corner {
+    background-color: hsla(0, 0, 50, 0.1);
+  }
+}
+
+a {
+  color: var(--linkColor);
+  text-decoration: underline;
+  cursor: pointer;
+  user-select: none;
+
+  &:hover { color: var(--linkColor-hover); }
+  &:active { color: var(--linkColor-active); }
+}
+
+pre, code {
+  font-family: Menlo, Consolas, monospace;
+}
+
+
+// util
+.block {
+  display: block;
+}
+.inline-block {
+  display: inline-block;
+}
+.inline {
+  display: inline;
+}
+
+.j-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.j-list > li {
+  &:not(:last-child) {
+    margin-bottom: 0.5em;
+  }
+}
+
+.j-dialog {
+  top: 0;
+  bottom: 0;
+  border: none;
+  border-radius: 2px;
+  box-shadow: 0 0 20px 5px hsla(0, 0, 50, 0.75);
+  color: var(--fontColor);
+
+  &,
+  &::backdrop {
+    background-color: var(--bgColor);
+    opacity: 0;
+    transition: opacity 0.1s;
+  }
+
+  &.fade {
+    opacity: 1;
+    &::backdrop {
+      opacity: 0.85;
+    }
+  }
+}
+.j-dialog-header {
+  margin-bottom: 0.5em;
+  text-align: center;
+
+  b {
+    font-size: 14px;
+    font-weight: 500;
+  }
+}
+.j-dialog-footer {
+  margin-top: 1em;
+  text-align: right;
+}
+
+.is-processing {
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    animation: blink 0.4s ease-out infinite alternate;
+    cursor: wait;
+  }
+
+  @keyframes blink {
+    0% {
+      background-color: hsla(0, 0, 50, 0);
+    }
+
+    100% {
+      background-color: hsla(0, 0, 50, 0.15);
+    }
+  }
+}

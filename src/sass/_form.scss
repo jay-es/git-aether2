@@ -1,0 +1,121 @@
+.j-fieldset {
+  border-color: var(--borderColor);
+  border-style: solid;
+  border-width: 1px;
+  margin: 0 0 1em;
+
+  legend {
+    padding: 0 0.5em;
+  }
+  
+  label {
+    user-select: none;
+    cursor: pointer;
+  
+    &.block {
+      margin: 0.25em 0;
+    }
+  
+    & + &:not(.block) {
+      margin-left: 1em;
+    }
+  }
+}
+
+:focus {
+  outline: none;
+}
+[disabled] {
+  opacity: 0.33;
+}
+
+.j-input {
+  padding: 0.25em 0.5em;
+  background-color: var(--input-bgColor);
+  border: 1px solid var(--input-borderColor);
+  border-radius: 2px;
+  font-size: 1em;
+  color: var(--fontColor);
+
+  @at-root select#{&} {
+    padding-top: 0.18em;
+    padding-bottom: 0.17em;
+  }
+
+  &::-webkit-input-placeholder {
+    opacity: 0.66;
+  }
+}
+
+.j-checkbox,
+.j-radio {
+  display: inline-block;
+  position: relative;
+  margin-top: 1px;
+  margin-right: 2px;
+  border: 1px solid var(--linkColor);
+  vertical-align: text-top;
+  -webkit-appearance: none;
+  width: 17px;
+  height: 17px;
+
+  &:checked::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    margin: auto;
+  }
+}
+.j-radio {
+  border-radius: 50%;
+
+  &:checked::after {
+    background-color: var(--radio-checkedBg);
+    border-radius: 50%;
+    width: 7px;
+    height: 7px;
+  }
+}
+.j-checkbox {
+  border-radius: 2px;
+
+  &:checked::after {
+    bottom: 3px;
+    border: 1px solid var(--linkColor);
+    border-width: 2px !important;
+    border-style: none solid solid none !important;
+    width: 4px;
+    height: 8px;
+    transform: rotate(45deg);
+  }
+}
+
+button {
+  padding: 0.15em 0.5em 0.35em;
+  border: none;
+  border-radius: 4px;
+  background-color: transparent;
+  font-size: 1em;
+  line-height: 1.35;
+  color: var(--linkColor);
+
+  &:not(:disabled) {
+    cursor: pointer;
+
+    &:hover {
+      background-color: var(--btn-hover-bgColor);
+    }
+    &:active {
+      background-color: var(--btn-active-bgColor);
+      color: var(--btn-active-color);
+    }
+  }
+
+  &.block {
+    text-align: center;
+    width: 100%;
+  }
+}

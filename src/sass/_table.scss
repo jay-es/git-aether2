@@ -1,0 +1,25 @@
+.j-table {
+  width: 100%;
+  border-collapse: collapse;
+  line-height: 1.1;
+
+  > thead {
+    white-space: nowrap;
+  }
+
+  > tbody tr {
+    vertical-align: top;
+  }
+
+  th, td {
+    border-color: var(--borderColor);
+    border-style: solid;
+    border-width: 1px 0;
+    padding: 4px 8px;
+  }
+
+  th {
+    font-weight: 500;
+  }
+}
+
