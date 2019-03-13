@@ -29,6 +29,7 @@ const path = require('path')
     app.serveFolder(path.resolve(__dirname, 'dist'))
   }
 
+  await app.exposeFunction('exec', require('./carlo/exec'))
   await app.exposeFunction('git', require('./carlo/git'))
 
   // Navigate to the main page of your app.

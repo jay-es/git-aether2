@@ -6,14 +6,30 @@ declare function git(
   ...args: any[]
 ): Promise<any>
 
+declare function exec(cwd: string, commandLine: string): Promise<void>
+
 export default class {
   constructor(public readonly basePath: string) {}
 
-  diffSummary(options?: string[]): Promise<string> {
-    return git(this.basePath, 'diffSummary', options)
+  branch(
+    options?: string[] | simplegit.Options
+  ): Promise<simplegit.BranchSummary> {
+    return git(this.basePath, 'branch', options)
+  }
+
+  checkout(what: string | string[]): Promise<void> {
+    return git(this.basePath, 'checkout', what)
+  }
+
+  fetch(options?: simplegit.Options): Promise<simplegit.FetchResult> {
+    return git(this.basePath, 'fetch', options)
   }
 
   status(): Promise<simplegit.StatusResult> {
     return git(this.basePath, 'status')
+  }
+
+  execCommand(commandLine: string): Promise<void> {
+    return exec(this.basePath, commandLine)
   }
 }
