@@ -1,8 +1,8 @@
 <template>
   <ul class="cell j-list">
-    <li v-for="(com, i) of commandList" :key="i">
-      <a href="#" :title="com.commandLine" @click="exec(com.commandLine)">
-        {{ com.label }}
+    <li v-for="({ label, commandLine }, i) of commandList" :key="i">
+      <a href="#" :title="commandLine" @click="exec(commandLine)">
+        {{ label }}
       </a>
     </li>
   </ul>
@@ -12,6 +12,9 @@
 import Vue from 'vue'
 import Git from '@/scripts/Git'
 import { Command } from '@/store'
+
+/** OSのコマンドを実行 */
+declare function exec(cwd: string, command: string): Promise<void>
 
 export default Vue.extend({
   props: {
@@ -27,7 +30,7 @@ export default Vue.extend({
   },
   methods: {
     exec(commandLine: string) {
-      this.repo.execCommand(commandLine)
+      exec(this.repo.basePath, commandLine)
     }
   }
 })

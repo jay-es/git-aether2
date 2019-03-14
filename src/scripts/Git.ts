@@ -6,8 +6,6 @@ declare function git(
   ...args: any[]
 ): Promise<any>
 
-declare function exec(cwd: string, commandLine: string): Promise<void>
-
 export default class {
   constructor(public readonly basePath: string) {}
 
@@ -37,10 +35,5 @@ export default class {
     } catch (e) {
       return e.message
     }
-  }
-
-  /** リポジトリのディレクトリでOSのコマンドを実行 */
-  execCommand(commandLine: string): Promise<void> {
-    return exec(this.basePath, commandLine)
   }
 }

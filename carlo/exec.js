@@ -1,5 +1,5 @@
 const { exec } = require('child_process')
 
-module.exports = (cwd, commandLine) => {
-  exec(commandLine, { cwd })
+module.exports = (cwd, command) => {
+  exec(command, { cwd })
 }
