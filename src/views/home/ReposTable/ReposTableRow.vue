@@ -36,8 +36,8 @@ export default Vue.extend({
     FetchLog
   },
   props: {
-    directory: {
-      type: String,
+    repo: {
+      type: Object as () => Git,
       required: true
     },
     rowIndex: {
@@ -46,9 +46,7 @@ export default Vue.extend({
     }
   },
   data() {
-    const repo = new Git(this.directory)
     return {
-      repo,
       logText: ''
     }
   }

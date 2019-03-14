@@ -2,7 +2,7 @@ import simplegit from 'simple-git/promise'
 
 declare function git(
   basePath: string,
-  methodName: string,
+  methodName?: string,
   ...args: any[]
 ): Promise<any>
 
@@ -29,6 +29,17 @@ export default class {
     return git(this.basePath, 'status')
   }
 
+  /** SimpleGitインスタンス作成時のエラーメッセージを取得 */
+  async getInitializeError(): Promise<string> {
+    try {
+      await git(this.basePath)
+      return ''
+    } catch (e) {
+      return e.message
+    }
+  }
+
+  /** リポジトリのディレクトリでOSのコマンドを実行 */
   execCommand(commandLine: string): Promise<void> {
     return exec(this.basePath, commandLine)
   }

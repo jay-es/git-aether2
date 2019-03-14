@@ -7,11 +7,11 @@
       <th>Commands</th>
       <th>Log</th>
     </thead>
-    <tbody :data-rows="directories.length">
+    <tbody :data-rows="repositories.length">
       <repos-table-row
-        v-for="(directory, rowIndex) of directories"
-        :key="directory"
-        :directory="directory"
+        v-for="(repo, rowIndex) of repositories"
+        :key="rowIndex"
+        :repo="repo"
         :row-index="rowIndex"
       />
     </tbody>
@@ -20,6 +20,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import Git from '@/scripts/Git'
 import { Path } from '@/store'
 import ReposTableRow from './ReposTableRow.vue'
 
@@ -27,11 +28,20 @@ export default Vue.extend({
   components: {
     ReposTableRow
   },
-  computed: {
-    directories(): string[] {
-      const pathList: Path[] = this.$store.state.pathList
-      return pathList.map(v => v.directory)
+  data() {
+    return {
+      repositories: [] as Git[]
     }
+  },
+  created() {
+    const pathList: Path[] = this.$store.state.pathList
+
+    // リポジトリの配列を作成
+    pathList.forEach(async v => {
+      const repo = new Git(v.directory)
+      if (await repo.getInitializeError()) return
+      this.repositories.push(repo)
+    })
   }
 })
 </script>

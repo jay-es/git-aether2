@@ -28,9 +28,9 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import CommandListRow from '@/views/command-list/CommandListRow.vue'
-import { Path } from '@/store'
 import Git from '@/scripts/Git'
+import { Path } from '@/store'
+import CommandListRow from '@/views/command-list/CommandListRow.vue'
 
 export default Vue.extend({
   name: 'PathListRow',
@@ -58,15 +58,7 @@ export default Vue.extend({
   watch: {
     'rowItem.directory': {
       async handler(v) {
-        try {
-          if (v) {
-            await new Git(v).status()
-          }
-
-          this.caution = ''
-        } catch (e) {
-          this.caution = e.message
-        }
+        this.caution = v ? await new Git(v).getInitializeError() : ''
       },
       immediate: true
     }
