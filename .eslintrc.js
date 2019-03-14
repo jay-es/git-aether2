@@ -12,10 +12,7 @@ module.exports = {
   rules: {
     'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
-    '@vue/prettier': [
-      process.env.NODE_ENV === 'production' ? 'error' : 'off',
-      require('./.prettierrc')
-    ]
+    '@typescript-eslint/no-unused-vars': 'error'
   },
   parserOptions: {
     parser: '@typescript-eslint/parser'
