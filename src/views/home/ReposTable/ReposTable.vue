@@ -37,10 +37,10 @@ export default Vue.extend({
     const pathList: Path[] = this.$store.state.pathList
 
     // リポジトリの配列を作成
-    pathList.forEach(async v => {
+    pathList.forEach(async (v, i) => {
       const repo = new Git(v.directory)
       if (await repo.getInitializeError()) return
-      this.repositories.push(repo)
+      this.$set(this.repositories, i, repo)
     })
   }
 })
