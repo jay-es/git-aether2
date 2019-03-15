@@ -10,7 +10,7 @@ const path = require('path')
     const vueDevtoolsPath = require('./carlo/vueDevtoolsPath')
     chromeOptions.push(
       '--allow-insecure-localhost',
-      '--auto-open-devtools-for-tabs',
+      // '--auto-open-devtools-for-tabs',
       `--disable-extensions-except=${vueDevtoolsPath}`
     )
   }

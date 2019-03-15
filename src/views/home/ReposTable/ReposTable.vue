@@ -33,15 +33,15 @@ export default Vue.extend({
       repositories: [] as Git[]
     }
   },
-  created() {
+  async created() {
     const pathList: Path[] = this.$store.state.pathList
 
-    // リポジトリの配列を作成
-    pathList.forEach(async (v, i) => {
-      const repo = new Git(v.directory)
-      if (await repo.getInitializeError()) return
-      this.$set(this.repositories, i, repo)
-    })
+    // リポジトリの配列を作成、エラーがあったら除外
+    const repos = pathList.map(v => new Git(v.directory))
+    const errors = await Promise.all(
+      repos.map(async repo => await repo.getInitializeError())
+    )
+    this.repositories = repos.filter((v, i) => !errors[i])
   }
 })
 </script>
