@@ -6,13 +6,14 @@ declare function git(
   ...args: any[]
 ): Promise<any>
 
-export default class {
+export default class Git {
+  public branchSummary = {} as simplegit.BranchSummary
+  public statusResult = {} as simplegit.StatusResult
+
   constructor(public readonly basePath: string) {}
 
-  branch(
-    options?: string[] | simplegit.Options
-  ): Promise<simplegit.BranchSummary> {
-    return git(this.basePath, 'branch', options)
+  async branch(): Promise<void> {
+    this.branchSummary = await git(this.basePath, 'branch', ['--all'])
   }
 
   checkout(what: string | string[]): Promise<void> {
@@ -23,8 +24,8 @@ export default class {
     return git(this.basePath, 'fetch', options)
   }
 
-  status(): Promise<simplegit.StatusResult> {
-    return git(this.basePath, 'status')
+  async status(): Promise<void> {
+    this.statusResult = await git(this.basePath, 'status')
   }
 
   /** SimpleGitインスタンス作成時のエラーメッセージを取得 */

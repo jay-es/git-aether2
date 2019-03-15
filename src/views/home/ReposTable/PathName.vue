@@ -23,29 +23,15 @@ export default Vue.extend({
       required: true
     }
   },
-  data() {
-    return {
-      changesNum: 0
-    }
-  },
   computed: {
+    changesNum(): number {
+      const { files } = this.repo.statusResult
+      return files ? files.length : 0
+    },
     changesText(): string {
       if (this.changesNum === 0) return 'no changes'
       if (this.changesNum === 1) return '1 change'
       return `${this.changesNum} changes`
-    }
-  },
-  created() {
-    this.refresh()
-    window.addEventListener('focus', this.refresh)
-  },
-  destroyed() {
-    window.removeEventListener('focus', this.refresh)
-  },
-  methods: {
-    async refresh() {
-      const res = await this.repo.status()
-      this.changesNum = res.files.length
     }
   }
 })

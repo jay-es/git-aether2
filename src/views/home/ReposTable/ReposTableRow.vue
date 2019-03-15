@@ -49,6 +49,21 @@ export default Vue.extend({
     return {
       logText: ''
     }
+  },
+  created() {
+    this.refresh()
+    window.addEventListener('focus', this.refresh)
+  },
+  destroyed() {
+    window.removeEventListener('focus', this.refresh)
+  },
+  methods: {
+    refresh() {
+      setTimeout(async () => {
+        await this.repo.status()
+        await this.repo.branch()
+      }, this.rowIndex * 10)
+    }
   }
 })
 </script>

@@ -1,14 +1,13 @@
 <template>
   <ul class="cell j-list local-branch-list">
-    <template v-for="(branch, key) in branches">
-      <li
-        :key="key"
-        :class="{ 'is-current': branch.current }"
-        @click="checkout(branch.name)"
-      >
-        {{ branch.name }}
-      </li>
-    </template>
+    <li
+      v-for="branch in branches"
+      :key="branch.name"
+      :class="{ 'is-current': branch.current }"
+      @click="checkout(branch.name)"
+    >
+      {{ branch.name }}
+    </li>
   </ul>
 </template>
 
@@ -17,12 +16,10 @@ import Vue from 'vue'
 import Git from '@/scripts/Git'
 
 interface branchInfo {
-  [key: string]: {
-    current: string // 実際はboolean
-    name: string
-    commit: string
-    label: string
-  }
+  current: string // 実際はboolean
+  name: string
+  commit: string
+  label: string
 }
 
 export default Vue.extend({
@@ -32,26 +29,21 @@ export default Vue.extend({
       required: true
     }
   },
-  data() {
-    return {
-      branches: {} as branchInfo
+  computed: {
+    branches(): branchInfo[] {
+      return Object.values(this.repo.branchSummary.branches || {}).filter(
+        v => !v.name.startsWith('remotes/')
+      )
     }
-  },
-  created() {
-    this.refresh()
-    window.addEventListener('focus', this.refresh)
-  },
-  destroyed() {
-    window.removeEventListener('focus', this.refresh)
   },
   methods: {
     async checkout(branchName: string) {
+      // カレントブランチなら終了
+      if (branchName === this.repo.branchSummary.current) return
+
       await this.repo.checkout(branchName)
-      this.refresh()
-    },
-    async refresh() {
-      const branchSummary = await this.repo.branch()
-      this.branches = branchSummary.branches
+      await this.repo.status()
+      await this.repo.branch()
     }
   }
 })

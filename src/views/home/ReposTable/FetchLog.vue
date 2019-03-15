@@ -31,7 +31,7 @@ export default Vue.extend({
   },
   created() {
     const run = () => window.setTimeout(this.fetch, this.rowIndex * 600)
-    run()
+    window.setTimeout(run, 1000)
     this.timerId = window.setInterval(run, 5 * 60000)
   },
   destroyed() {

@@ -17,22 +17,11 @@ export default Vue.extend({
       required: true
     }
   },
-  data() {
-    return {
-      branchNames: [] as string[]
-    }
-  },
-  created() {
-    this.refresh()
-    window.addEventListener('focus', this.refresh)
-  },
-  destroyed() {
-    window.removeEventListener('focus', this.refresh)
-  },
-  methods: {
-    async refresh() {
-      const branchSummary = await this.repo.branch(['--remote'])
-      this.branchNames = branchSummary.all
+  computed: {
+    branchNames(): string[] {
+      return (this.repo.branchSummary.all || [])
+        .filter(v => v.startsWith('remotes/'))
+        .map(v => v.substr(8))
     }
   }
 })
