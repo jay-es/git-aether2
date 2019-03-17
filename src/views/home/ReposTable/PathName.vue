@@ -40,6 +40,6 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .changes {
   display: inline-block;
-  margin-bottom: 0;
+  margin: 0.5em 0 0;
 }
 </style>
