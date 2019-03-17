@@ -41,9 +41,12 @@ export default Vue.extend({
       // カレントブランチなら終了
       if (branchName === this.repo.branchSummary.current) return
 
-      await this.repo.checkout(branchName)
-      await this.repo.status()
-      await this.repo.branch()
+      try {
+        await this.repo.checkout(branchName)
+        this.$emit('update')
+      } catch (e) {
+        alert(e.message.replace(/\t/g, '    '))
+      }
     }
   }
 })

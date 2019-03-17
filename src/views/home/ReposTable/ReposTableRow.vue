@@ -4,7 +4,7 @@
       <path-name :repo="repo" />
     </td>
     <td>
-      <local-branch-list :repo="repo" />
+      <local-branch-list :repo="repo" @update="refresh" />
     </td>
     <td>
       <tracking-branch-list :repo="repo" />
@@ -59,10 +59,8 @@ export default Vue.extend({
   },
   methods: {
     refresh() {
-      setTimeout(async () => {
-        await this.repo.status()
-        await this.repo.branch()
-      }, this.rowIndex * 10)
+      this.repo.status()
+      this.repo.branch()
     }
   }
 })
