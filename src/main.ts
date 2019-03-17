@@ -2,8 +2,10 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
+import JContextMenu from './plugins/JContextMenu'
 
 Vue.config.productionTip = false
+Vue.use(JContextMenu)
 
 new Vue({
   router,

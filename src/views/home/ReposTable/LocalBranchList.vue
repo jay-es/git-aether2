@@ -1,8 +1,9 @@
 <template>
   <ul class="cell j-list local-branch-list">
     <li
-      v-for="branch in branches"
+      v-for="(branch, i) in branches"
       :key="branch.name"
+      v-jcontextmenu="i"
       :class="{ 'is-current': branch.current }"
       @click="checkout(branch.name)"
     >
@@ -47,6 +48,63 @@ export default Vue.extend({
       } catch (e) {
         alert(e.message.replace(/\t/g, '    '))
       }
+    },
+    jContextMenuItems(index: number) {
+      const branch: branchInfo = this.branches[index]
+      return [
+        // カレントブランチ
+        {
+          label: `Push (origin/${branch.name})`,
+          enabled: branch.current,
+          click: () => {
+            console.log('TODO: Push')
+          }
+        },
+        {
+          label: `Pull (origin/${branch.name})`,
+          enabled: branch.current,
+          click: () => {
+            console.log('TODO: Pull')
+          }
+        },
+        {
+          label: 'Merge',
+          enabled: branch.current,
+          click: () => {
+            console.log('TODO: Merge')
+          }
+        },
+        { type: 'separator' },
+
+        // カレントブランチではない
+        {
+          label: 'Checkout',
+          enabled: !branch.current,
+          click: () => this.checkout(branch.name)
+        },
+        {
+          label: 'Delete',
+          enabled: !branch.current,
+          click: () => {
+            console.log('TODO: Delete')
+          }
+        },
+        { type: 'separator' },
+
+        // どちらでも
+        {
+          label: 'Rename',
+          click: () => {
+            console.log('TODO: Rename')
+          }
+        },
+        {
+          label: 'Create',
+          click: () => {
+            console.log('TODO: Create')
+          }
+        }
+      ]
     }
   }
 })
