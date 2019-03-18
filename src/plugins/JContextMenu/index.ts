@@ -23,11 +23,11 @@ export default {
 
     Vue.directive('jcontextmenu', {
       bind(el: HTMLElement, binding: any, vnode: any) {
-        el.addEventListener('contextmenu', e => {
+        el.addEventListener('contextmenu', async e => {
           e.preventDefault()
 
           // set default to enabled and click if undefined
-          vm.menuItems = vnode.context.jContextMenuItems(binding.value)
+          vm.menuItems = await vnode.context.jContextMenuItems(binding.value)
           vm.menuItems = vm.menuItems.map(v =>
             Object.assign({ enabled: true, click() {} }, v)
           )
