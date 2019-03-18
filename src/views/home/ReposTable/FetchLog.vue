@@ -41,8 +41,14 @@ export default Vue.extend({
     async fetch() {
       this.$emit('update:logText', '')
       this.isFetching = true
-      const res = await this.repo.fetch({ '--all': null, '--prune': null })
-      this.$emit('update:logText', res.raw)
+
+      try {
+        const res = await this.repo.fetch({ '--all': null, '--prune': null })
+        this.$emit('update:logText', res.raw)
+      } catch (e) {
+        this.$emit('update:logText', e.message)
+      }
+
       this.isFetching = false
     }
   }
