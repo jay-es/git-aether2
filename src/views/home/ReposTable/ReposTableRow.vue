@@ -4,7 +4,11 @@
       <path-name :repo="repo" />
     </td>
     <td>
-      <local-branch-list :repo="repo" @update="refresh" />
+      <local-branch-list
+        :repo="repo"
+        :log-text.sync="logText"
+        @change="refresh"
+      />
     </td>
     <td>
       <tracking-branch-list :repo="repo" />

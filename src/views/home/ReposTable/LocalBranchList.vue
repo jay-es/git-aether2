@@ -44,28 +44,87 @@ export default Vue.extend({
 
       try {
         await this.repo.checkout(branchName)
-        this.$emit('update')
+        this.$emit('change')
       } catch (e) {
         alert(e.message.replace(/\t/g, '    '))
       }
     },
-    jContextMenuItems(index: number) {
+    async delete(branchName: string, force?: boolean): Promise<void> {
+      const confirmText = force
+        ? `The branch '${branchName}' is not fully merged.\n` +
+          'Recovering deleted branches is difficult.\nDelete this branch?'
+        : 'Delete this branch?'
+
+      if (!confirm(confirmText)) return
+
+      try {
+        await this.repo.delete(branchName, force)
+        this.$emit('change')
+      } catch (e) {
+        // マージされていないブランチだったら、強制削除モードで再度実行
+        if (e.message.includes('is not fully merged.')) {
+          return await this.delete(branchName, true)
+        }
+
+        alert(e.message)
+      }
+    },
+    async pull(remote: string, branch: string) {
+      this.toggleAnimation(true)
+
+      try {
+        const res = await this.repo.pull(remote, branch)
+        const newLogText = Object.entries(res.summary)
+          .map(([k, v]) => `${k}: ${v}`)
+          .join('\n')
+
+        this.$emit('update:logText', newLogText)
+        this.$emit('change')
+      } catch (e) {
+        alert(e.message)
+      }
+
+      this.toggleAnimation(false)
+    },
+    async push(remote: string, branch: string) {
+      this.toggleAnimation(true)
+
+      try {
+        await this.repo.push(remote, branch, { '-u': null })
+        this.$emit('change')
+      } catch (e) {
+        alert(e.message)
+      }
+
+      this.toggleAnimation(false)
+    },
+    // is-processing クラスのつけはずし
+    toggleAnimation(start: boolean) {
+      if (this.$el.parentElement) {
+        const method = start ? 'add' : 'remove'
+        this.$el.parentElement.classList[method]('is-processing')
+      }
+    },
+
+    // コンテキストメニュー
+    async jContextMenuItems(index: number) {
       const branch: branchInfo = this.branches[index]
+      const remoteName = 'origin' // (await this.repo.getRemoteName()).trim()
+      const trackingBranchName = `${remoteName}/${branch.name}`
+      const remoteBranchName = `remotes/${trackingBranchName}`
+      const hasRemote = this.repo.branchSummary.all.includes(remoteBranchName)
+
       return [
         // カレントブランチ
         {
-          label: `Push (origin/${branch.name})`,
+          label: `Push (${trackingBranchName})`,
           enabled: branch.current,
-          click: () => {
-            console.log('TODO: Push')
-          }
+          click: () => this.push(remoteName, branch.name)
         },
         {
-          label: `Pull (origin/${branch.name})`,
-          enabled: branch.current,
-          click: () => {
-            console.log('TODO: Pull')
-          }
+          label: `Pull (${trackingBranchName})`,
+          enabled: branch.current && hasRemote,
+          click: () => this.pull(remoteName, branch.name)
         },
         {
           label: 'Merge',
@@ -85,9 +144,7 @@ export default Vue.extend({
         {
           label: 'Delete',
           enabled: !branch.current,
-          click: () => {
-            console.log('TODO: Delete')
-          }
+          click: () => this.delete(branch.name)
         },
         { type: 'separator' },
 
