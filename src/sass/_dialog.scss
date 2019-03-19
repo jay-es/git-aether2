@@ -1,0 +1,37 @@
+.j-dialog {
+  top: 0;
+  bottom: 0;
+  border: none;
+  border-radius: 2px;
+  box-shadow: 0 0 20px 5px hsla(0, 0, 50, 0.75);
+  color: var(--fontColor);
+
+  &,
+  &::backdrop {
+    background-color: var(--bgColor);
+    opacity: 0;
+    transform: scale(0.95);
+    transition: opacity 0.1s, transform 0.1s;
+  }
+
+  &.fade {
+    opacity: 1;
+    transform: scale(1);
+    &::backdrop {
+      opacity: 0.85;
+    }
+  }
+}
+.j-dialog-header {
+  margin-bottom: 0.5em;
+  text-align: center;
+
+  b {
+    font-size: 14px;
+    font-weight: 500;
+  }
+}
+.j-dialog-footer {
+  margin-top: 1em;
+  text-align: right;
+}

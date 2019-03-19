@@ -1,24 +1,22 @@
 .j-fieldset {
-  border-color: var(--borderColor);
-  border-style: solid;
-  border-width: 1px;
   margin: 0 0 1em;
+  border: 1px solid var(--borderColor);
 
-  legend {
+  > .j-legend {
     padding: 0 0.5em;
   }
-  
-  label {
-    user-select: none;
-    cursor: pointer;
-  
-    &.block {
-      margin: 0.25em 0;
-    }
-  
-    & + &:not(.block) {
-      margin-left: 1em;
-    }
+
+}
+.j-label {
+  user-select: none;
+  cursor: pointer;
+
+  &.block {
+    margin: 0.25em 0;
+  }
+
+  &:nth-last-child(n + 2):not(.block) {
+    margin-right: 1em;
   }
 }
 
@@ -29,7 +27,8 @@
   opacity: 0.33;
 }
 
-.j-input {
+.j-input,
+.j-select {
   padding: 0.25em 0.5em;
   background-color: var(--input-bgColor);
   border: 1px solid var(--input-borderColor);
@@ -37,14 +36,14 @@
   font-size: 1em;
   color: var(--fontColor);
 
-  @at-root select#{&} {
-    padding-top: 0.18em;
-    padding-bottom: 0.17em;
-  }
-
   &::-webkit-input-placeholder {
     opacity: 0.66;
   }
+}
+
+.j-select {
+  padding-top: 0.18em;
+  padding-bottom: 0.17em;
 }
 
 .j-checkbox,
