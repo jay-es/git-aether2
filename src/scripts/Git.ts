@@ -35,18 +35,28 @@ export default class Git {
     return git(this.basePath, 'checkout', what)
   }
 
+  checkoutBranch(branchName: string, startPoint: string): Promise<void> {
+    return git(this.basePath, 'checkoutBranch', branchName, startPoint)
+  }
+
   delete(branchName: string, force?: boolean): Promise<void> {
     const option = force ? '-D' : '-d'
     return git(this.basePath, 'raw', ['branch', option, branchName])
   }
 
-  fetch(options?: simplegit.Options): Promise<simplegit.FetchResult> {
-    return git(this.basePath, 'fetch', options)
+  fetch(options: simplegit.Options): Promise<simplegit.FetchResult>
+  fetch(remote: string, branch: string): Promise<simplegit.FetchResult>
+  fetch(...args: any[]): Promise<simplegit.FetchResult> {
+    return git(this.basePath, 'fetch', ...args)
   }
 
   // getRemoteName(): Promise<string> {
   //   return git(this.basePath, 'remote', ['show'])
   // }
+
+  merge(options: simplegit.Options | string[]): Promise<any> {
+    return git(this.basePath, 'merge', options)
+  }
 
   pull(
     remote: string,
@@ -62,6 +72,10 @@ export default class Git {
     options?: simplegit.Options
   ): Promise<void> {
     return git(this.basePath, 'push', remote, branch, options)
+  }
+
+  rename(branchName: string, newName: string): Promise<void> {
+    return git(this.basePath, 'raw', ['branch', '-m', branchName, newName])
   }
 
   async status(): Promise<void> {

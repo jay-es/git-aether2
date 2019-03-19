@@ -2,7 +2,7 @@
   <ul class="cell j-list local-branch-list">
     <li
       v-for="(branch, i) in branches"
-      :key="branch.name"
+      :key="branch.name + i"
       v-jcontextmenu="i"
       :class="{ 'is-current': branch.current }"
       @click="checkout(branch.name)"
@@ -15,6 +15,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import Git from '@/scripts/Git'
+import modalController from '../modals/modalController'
 
 interface branchInfo {
   current: string // 実際はboolean
@@ -129,9 +130,7 @@ export default Vue.extend({
         {
           label: 'Merge',
           enabled: branch.current,
-          click: () => {
-            console.log('TODO: Merge')
-          }
+          click: () => modalController.openMergeModal(this.repo, branch.name)
         },
         { type: 'separator' },
 
@@ -151,15 +150,11 @@ export default Vue.extend({
         // どちらでも
         {
           label: 'Rename',
-          click: () => {
-            console.log('TODO: Rename')
-          }
+          click: () => modalController.openRenameModal(this.repo, branch.name)
         },
         {
           label: 'Create',
-          click: () => {
-            console.log('TODO: Create')
-          }
+          click: () => modalController.openCreateModal(this.repo)
         }
       ]
     }

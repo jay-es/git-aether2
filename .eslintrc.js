@@ -16,5 +16,13 @@ module.exports = {
   },
   parserOptions: {
     parser: '@typescript-eslint/parser'
-  }
+  },
+  overrides: [
+    {
+      files: ['*.ts'],
+      rules: {
+        'no-dupe-class-members': 'off'
+      }
+    }
+  ]
 }

@@ -6,17 +6,26 @@
     </nav>
 
     <repos-table />
+    <create-branch-modal />
+    <merge-branch-modal />
+    <rename-branch-modal />
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 import ReposTable from './ReposTable/ReposTable.vue'
+import CreateBranchModal from './modals/CreateBranchModal.vue'
+import MergeBranchModal from './modals/MergeBranchModal.vue'
+import RenameBranchModal from './modals/RenameBranchModal.vue'
 
 export default Vue.extend({
   name: 'Index',
   components: {
-    ReposTable
+    ReposTable,
+    CreateBranchModal,
+    MergeBranchModal,
+    RenameBranchModal
   }
 })
 </script>
