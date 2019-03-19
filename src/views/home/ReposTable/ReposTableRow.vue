@@ -21,11 +21,11 @@
 <script lang="ts">
 import Vue from 'vue'
 import Git from '@/scripts/Git'
-import PathName from './PathName.vue'
-import LocalBranchList from './LocalBranchList.vue'
-import TrackingBranchList from './TrackingBranchList.vue'
-import CommandList from './CommandList.vue'
-import FetchLog from './FetchLog.vue'
+import PathName from './ReposTableRowPathName.vue'
+import LocalBranchList from './ReposTableRowLocalBranchList.vue'
+import TrackingBranchList from './ReposTableRowTrackingBranchList.vue'
+import CommandList from './ReposTableRowCommandList.vue'
+import FetchLog from './ReposTableRowFetchLog.vue'
 
 export default Vue.extend({
   components: {
