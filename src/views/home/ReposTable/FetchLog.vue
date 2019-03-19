@@ -14,10 +14,6 @@ export default Vue.extend({
       type: Object as () => Git,
       required: true
     },
-    logText: {
-      type: String,
-      required: true
-    },
     rowIndex: {
       type: Number,
       required: true
@@ -27,6 +23,11 @@ export default Vue.extend({
     return {
       isFetching: false,
       timerId: 0
+    }
+  },
+  computed: {
+    logText(): string {
+      return this.repo.logText
     }
   },
   created() {
@@ -39,14 +40,14 @@ export default Vue.extend({
   },
   methods: {
     async fetch() {
-      this.$emit('update:logText', '')
+      this.repo.setLogText('')
       this.isFetching = true
 
       try {
         const res = await this.repo.fetch({ '--all': null, '--prune': null })
-        this.$emit('update:logText', res.raw)
+        this.repo.setLogText(res.raw)
       } catch (e) {
-        this.$emit('update:logText', e.message)
+        this.repo.setLogText(e.message)
       }
 
       this.isFetching = false

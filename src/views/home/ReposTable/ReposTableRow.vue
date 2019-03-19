@@ -4,11 +4,7 @@
       <path-name :repo="repo" />
     </td>
     <td>
-      <local-branch-list
-        :repo="repo"
-        :log-text.sync="logText"
-        @change="refresh"
-      />
+      <local-branch-list :repo="repo" @change="refresh" />
     </td>
     <td>
       <tracking-branch-list :repo="repo" />
@@ -17,7 +13,7 @@
       <command-list :repo="repo" />
     </td>
     <td>
-      <fetch-log :repo="repo" :row-index="rowIndex" :log-text.sync="logText" />
+      <fetch-log :repo="repo" :row-index="rowIndex" />
     </td>
   </tr>
 </template>
@@ -47,11 +43,6 @@ export default Vue.extend({
     rowIndex: {
       type: Number,
       required: true
-    }
-  },
-  data() {
-    return {
-      logText: ''
     }
   },
   created() {

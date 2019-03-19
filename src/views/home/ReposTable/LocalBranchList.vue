@@ -78,7 +78,7 @@ export default Vue.extend({
           .map(([k, v]) => `${k}: ${v}`)
           .join('\n')
 
-        this.$emit('update:logText', newLogText)
+        this.repo.setLogText(newLogText)
         this.$emit('change')
       } catch (e) {
         alert(e.message)

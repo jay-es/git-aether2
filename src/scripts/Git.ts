@@ -7,13 +7,28 @@ declare function git(
 ): Promise<any>
 
 export default class Git {
+  public localBranchNames = [] as string[]
+  public trackingBranchNames = [] as string[]
   public branchSummary = {} as simplegit.BranchSummary
   public statusResult = {} as simplegit.StatusResult
+  public logText = ''
 
   constructor(public readonly basePath: string) {}
 
+  // 配列の要素を消して、新しい要素を入れる
+  private static replaceArray<T>(arr: T[], newArr: T[]) {
+    arr.splice(0, arr.length, ...newArr)
+  }
+
   async branch(): Promise<void> {
     this.branchSummary = await git(this.basePath, 'branch', ['--all'])
+
+    const local = this.branchSummary.all.filter(v => !v.startsWith('remotes/'))
+    const track = this.branchSummary.all
+      .filter(v => v.startsWith('remotes/'))
+      .map(v => v.substr(8))
+    Git.replaceArray(this.localBranchNames, local)
+    Git.replaceArray(this.trackingBranchNames, track)
   }
 
   checkout(what: string | string[]): Promise<void> {
@@ -51,6 +66,10 @@ export default class Git {
 
   async status(): Promise<void> {
     this.statusResult = await git(this.basePath, 'status')
+  }
+
+  setLogText(text: any) {
+    this.logText = text
   }
 
   /** SimpleGitインスタンス作成時のエラーメッセージを取得 */

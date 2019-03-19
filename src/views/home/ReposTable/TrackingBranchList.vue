@@ -19,9 +19,7 @@ export default Vue.extend({
   },
   computed: {
     branchNames(): string[] {
-      return (this.repo.branchSummary.all || [])
-        .filter(v => v.startsWith('remotes/'))
-        .map(v => v.substr(8))
+      return this.repo.trackingBranchNames
     }
   }
 })
