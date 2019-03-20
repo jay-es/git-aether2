@@ -47,6 +47,7 @@ export default ModalBase.extend({
     init(repo: Git, branchName: string) {
       this.repo = repo
       this.branchName = branchName
+      this.newName = branchName
       this.openModal()
     },
     async exec() {
