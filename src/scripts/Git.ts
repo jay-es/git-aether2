@@ -20,6 +20,11 @@ export default class Git {
     arr.splice(0, arr.length, ...newArr)
   }
 
+  // SimpleGit.rawを呼び出すシュガーメソッド
+  private raw(commands: string | string[]): Promise<void> {
+    return git(this.basePath, 'raw', commands)
+  }
+
   async branch(): Promise<void> {
     this.branchSummary = await git(this.basePath, 'branch', ['--all'])
 
@@ -41,7 +46,7 @@ export default class Git {
 
   delete(branchName: string, force?: boolean): Promise<void> {
     const option = force ? '-D' : '-d'
-    return git(this.basePath, 'raw', ['branch', option, branchName])
+    return this.raw(['branch', option, branchName])
   }
 
   fetch(options: simplegit.Options): Promise<simplegit.FetchResult>
@@ -75,7 +80,9 @@ export default class Git {
   }
 
   rename(branchName: string, newName: string): Promise<void> {
-    return git(this.basePath, 'raw', ['branch', '-m', branchName, newName])
+    return this.raw(['branch', '-m', branchName, newName])
+  }
+
   }
 
   async status(): Promise<void> {
