@@ -1,17 +1,24 @@
 <template>
-  <ul v-show="show" :style="styleObject" class="jcm" @mousedown.left.stop>
-    <template v-for="(item, i) in menuItems">
-      <hr v-if="item.type === 'separator'" :key="i" class="jcm-separator" />
+  <dialog class="jcm" :style="styleObject" @mousedown.right="hide">
+    <ul class="jcm-list">
+      <template v-for="(item, i) in menuItems">
+        <hr v-if="item.type === 'separator'" :key="i" class="jcm-separator" />
 
-      <li v-else-if="!item.enabled" :key="i" class="jcm-item--off">
-        {{ item.label }}
-      </li>
+        <li
+          v-else-if="!item.enabled"
+          :key="i"
+          class="jcm-item--off"
+          @click.stop
+        >
+          {{ item.label }}
+        </li>
 
-      <li v-else :key="i" class="jcm-item--on" @click="onclick(item.click)">
-        {{ item.label }}
-      </li>
-    </template>
-  </ul>
+        <li v-else :key="i" class="jcm-item--on" @click="onclick(item.click)">
+          {{ item.label }}
+        </li>
+      </template>
+    </ul>
+  </dialog>
 </template>
 
 <script lang="ts">
@@ -35,8 +42,7 @@ export default Vue.extend({
   data() {
     return {
       top: 0,
-      left: 0,
-      show: false
+      left: 0
     }
   },
   computed: {
@@ -49,9 +55,9 @@ export default Vue.extend({
   },
   watch: {
     menuItems() {
+      ;(this.$el as HTMLDialogElement).showModal()
       this.top = this.pageY
       this.left = this.pageX
-      this.show = true
 
       this.$nextTick(() => {
         const rects = this.$el.getClientRects()[0]
@@ -70,17 +76,17 @@ export default Vue.extend({
   },
   mounted() {
     window.addEventListener('blur', this.hide)
-    window.addEventListener('mousedown', this.hide)
+    window.addEventListener('click', this.hide)
     window.addEventListener('scroll', this.hide)
   },
   destroyed() {
     window.removeEventListener('blur', this.hide)
-    window.removeEventListener('mousedown', this.hide)
+    window.removeEventListener('click', this.hide)
     window.removeEventListener('scroll', this.hide)
   },
   methods: {
     hide() {
-      if (this.show) this.show = false
+      ;(this.$el as HTMLDialogElement).close()
     },
     onclick(handler: () => void) {
       handler()
@@ -93,17 +99,25 @@ export default Vue.extend({
 <style>
 .jcm {
   position: absolute;
-  display: block;
   margin: 0;
-  padding: 0.3em 0;
+  padding: 0;
   border: 1px solid #bbb;
   background-color: #fff;
-  list-style: none;
   cursor: default;
+  font-family: initial;
   font-size: 12px;
   color: #000;
   white-space: nowrap;
   user-select: none;
+}
+.jcm::backdrop {
+  opacity: 0;
+}
+.jcm-list {
+  display: block;
+  margin: 0;
+  padding: 0.3em 0;
+  list-style: none;
 }
 .jcm-item--on,
 .jcm-item--off {
@@ -113,7 +127,7 @@ export default Vue.extend({
   background-color: #eee;
 }
 .jcm-item--off {
-  opacity: 0.4;
+  color: #aaa;
 }
 .jcm-separator {
   border: none;
