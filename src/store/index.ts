@@ -15,19 +15,19 @@ export interface Path {
 
 export type theme = 'theme-light' | 'theme-dark'
 
-export interface State {
+export interface RootState {
   commandList: Command[]
   pathList: Path[]
   theme: theme
 }
 
-const state: State = {
+const state: RootState = {
   commandList: JSON.parse(localStorage.commandList || '[]'),
   pathList: JSON.parse(localStorage.pathList || '[]'),
   theme: localStorage.theme || 'theme-light'
 }
 
-export default new Vuex.Store({
+export default new Vuex.Store<RootState>({
   state,
   mutations: {
     setCommandList(state, payload: Command[]) {
