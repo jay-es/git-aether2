@@ -21,7 +21,7 @@ export default class Git {
   }
 
   // SimpleGit.rawを呼び出すシュガーメソッド
-  private raw(commands: string | string[]): Promise<void> {
+  private raw(commands: string | string[]): Promise<any> {
     return git(this.basePath, 'raw', commands)
   }
 
@@ -47,6 +47,10 @@ export default class Git {
   delete(branchName: string, force?: boolean): Promise<void> {
     const option = force ? '-D' : '-d'
     return this.raw(['branch', option, branchName])
+  }
+
+  diffTool(options: string[]): Promise<void> {
+    return this.raw(['difftool', ...options])
   }
 
   fetch(options: simplegit.Options): Promise<simplegit.FetchResult>
@@ -83,10 +87,25 @@ export default class Git {
     return this.raw(['branch', '-m', branchName, newName])
   }
 
+  /** fileを省略した場合は全ファイル対象 */
+  stage(file?: string): Promise<void> {
+    return this.raw(['add', file || '--all'])
   }
 
   async status(): Promise<void> {
     this.statusResult = await git(this.basePath, 'status')
+  }
+
+  /** fileを省略した場合は全ファイル対象 */
+  async statusShort(file?: string): Promise<string> {
+    const commands = file ? ['status', '--short', file] : ['status', '--short']
+    return (await this.raw(commands)) || '' // 変更ファイルがないとnullが返ってくる
+  }
+
+  /** fileを省略した場合は全ファイル対象 */
+  unstage(file?: string): Promise<void> {
+    const commands = file ? ['reset', 'HEAD', file] : ['reset', 'HEAD']
+    return this.raw(commands)
   }
 
   setLogText(text: any) {

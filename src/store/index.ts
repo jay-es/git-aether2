@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import diff from './diff'
 
 Vue.use(Vuex)
 
@@ -28,6 +29,9 @@ const state: RootState = {
 }
 
 export default new Vuex.Store<RootState>({
+  modules: {
+    diff
+  },
   state,
   mutations: {
     setCommandList(state, payload: Command[]) {

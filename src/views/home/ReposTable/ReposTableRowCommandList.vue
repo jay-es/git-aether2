@@ -13,9 +13,6 @@ import Vue from 'vue'
 import Git from '@/scripts/Git'
 import { Command } from '@/store'
 
-/** OSのコマンドを実行 */
-declare function exec(cwd: string, command: string): Promise<void>
-
 export default Vue.extend({
   props: {
     repo: {

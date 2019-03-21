@@ -31,6 +31,7 @@ const path = require('path')
 
   await app.exposeFunction('exec', require('./carlo/exec'))
   await app.exposeFunction('git', require('./carlo/git'))
+  await app.exposeFunction('trash', require('./carlo/trash'))
 
   // Navigate to the main page of your app.
   await app.load('index.html')

@@ -3,7 +3,7 @@
     {{ repo.basePath }}<br />
     <p class="changes">
       <template v-if="changesNum">
-        <a>{{ changesText }}</a>
+        <a @click="openDiff">{{ changesText }}</a>
       </template>
       <template v-else>
         {{ changesText }}
@@ -15,6 +15,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import Git from '@/scripts/Git'
+import modalController from '../modals/modalController'
 
 export default Vue.extend({
   props: {
@@ -32,6 +33,11 @@ export default Vue.extend({
       if (this.changesNum === 0) return 'no changes'
       if (this.changesNum === 1) return '1 change'
       return `${this.changesNum} changes`
+    }
+  },
+  methods: {
+    openDiff() {
+      modalController.openDiffModal(this.repo)
     }
   }
 })

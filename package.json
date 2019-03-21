@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "simple-git": "^1.107.0",
+    "trash": "^5.0.0",
     "vue": "^2.6.6",
     "vue-router": "^3.0.1",
     "vuex": "^3.0.1"
