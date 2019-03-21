@@ -121,6 +121,7 @@ export default Vue.extend({
   max-width: calc(100% - 30px);
   cursor: pointer;
   vertical-align: top;
+  overflow-x: hidden;
 
   &.is-current::before {
     content: '';

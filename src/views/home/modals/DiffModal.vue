@@ -37,6 +37,9 @@ export default ModalBase.extend({
     },
     reset() {
       this.$store.commit('diff/resetCurrent')
+      this.$el
+        .querySelectorAll('.diff-wrap > .col')
+        .forEach(el => ((el as HTMLElement).style.width = null))
     }
   }
 })
@@ -52,7 +55,8 @@ export default ModalBase.extend({
   height: calc(100% - 60px);
 }
 .col:nth-child(1) {
-  padding-right: 10px;
+  padding-bottom: 10px;
+  width: 190px;
   min-width: 190px;
   resize: horizontal;
   overflow: auto;
