@@ -5,10 +5,16 @@
   "scripts": {
     "carlo": "node main.js",
     "carlo:dev": "node main.js dev",
+    "pkg": "pkg . --out-path=dist",
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "test:unit": "vue-cli-service test:unit"
+  },
+  "bin": "main.js",
+  "pkg": {
+    "scripts": ["dist/js/*.js"],
+    "assets": ["dist/**/*"]
   },
   "dependencies": {
     "simple-git": "^1.107.0",
@@ -34,6 +40,7 @@
     "eslint": "^5.8.0",
     "eslint-plugin-vue": "^5.0.0",
     "fibers": "^3.1.1",
+    "pkg": "^4.3.7",
     "sass": "^1.17.2",
     "sass-loader": "^7.1.0",
     "typescript": "^3.2.1",
