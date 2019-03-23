@@ -25,6 +25,10 @@ export default class Git {
     return git(this.basePath, 'raw', commands)
   }
 
+  addN(file: string): Promise<void> {
+    return this.raw(['add', '-N', file])
+  }
+
   async branch(): Promise<void> {
     this.branchSummary = await git(this.basePath, 'branch', ['--all'])
 
@@ -47,6 +51,11 @@ export default class Git {
   delete(branchName: string, force?: boolean): Promise<void> {
     const option = force ? '-D' : '-d'
     return this.raw(['branch', option, branchName])
+  }
+
+  diff(file: string, isCached: boolean): Promise<string> {
+    const options = isCached ? ['--cached', file] : [file]
+    return git(this.basePath, 'diff', options)
   }
 
   diffTool(options: string[]): Promise<void> {

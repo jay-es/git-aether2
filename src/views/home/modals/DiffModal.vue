@@ -6,6 +6,7 @@
 
     <section class="diff-wrap">
       <file-list class="col" :repo="repo" />
+      <diff-text class="col" :repo="repo" />
     </section>
 
     <footer class="j-dialog-footer">
@@ -19,10 +20,12 @@ import Git from '@/scripts/Git'
 import ModalBase from './ModalBase'
 import modalController from './modalController'
 import FileList from './DiffModalFileList.vue'
+import DiffText from './DiffModalDiffText.vue'
 
 export default ModalBase.extend({
   components: {
-    FileList
+    FileList,
+    DiffText
   },
   data() {
     return {

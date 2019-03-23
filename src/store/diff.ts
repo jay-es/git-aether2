@@ -32,6 +32,7 @@ const module: Module<DiffState, RootState> = {
     },
     setCurrentCached(state, isCached) {
       state.currentFile.isCached = isCached
+      state.currentFile.timestamp = Date.now()
     }
   },
   namespaced: true

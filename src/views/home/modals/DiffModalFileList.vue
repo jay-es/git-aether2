@@ -76,6 +76,12 @@ export default Vue.extend({
       deep: true,
       handler() {
         this.updateAllFileStatus()
+
+        // タイムスタンプだけ更新
+        this.$store.commit(
+          'diff/setCurrentCached',
+          this.$store.state.diff.currentFile.isCached
+        )
       }
     }
   },
@@ -118,17 +124,19 @@ export default Vue.extend({
       // file.hasUnstaged = false
       await this.repo.stage(file.path)
       this.updateFileStatus(file, index)
+      this.$store.commit('diff/setCurrentCached', true) // currentFile の isCached を変更
     },
     async unstage(file: File, index: number) {
       // file.hasStaged = false
       // file.hasUnstaged = true
       await this.repo.unstage(file.path)
       this.updateFileStatus(file, index)
+      this.$store.commit('diff/setCurrentCached', false)
     },
     async stageAll() {
       await this.repo.stage()
       this.updateAllFileStatus()
-      this.$store.commit('diff/setCurrentCached', true) // currentFile の isCached を変更
+      this.$store.commit('diff/setCurrentCached', true)
     },
     async unstageAll() {
       await this.repo.unstage()
