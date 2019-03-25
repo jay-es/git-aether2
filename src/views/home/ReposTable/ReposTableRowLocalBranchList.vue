@@ -3,9 +3,9 @@
     <li
       v-for="(branch, i) in branches"
       :key="branch.name + i"
-      v-jcontextmenu="i"
       :class="{ 'is-current': branch.current }"
       @click="checkout(branch.name)"
+      @contextmenu="popupMenu(branch)"
     >
       {{ branch.name }}
     </li>
@@ -13,12 +13,13 @@
 </template>
 
 <script lang="ts">
+import { remote } from 'electron'
 import Vue from 'vue'
 import Git from '@/scripts/Git'
 import modalController from '../modals/modalController'
 
 interface branchInfo {
-  current: string // 実際はboolean
+  current: boolean
   name: string
   commit: string
   label: string
@@ -108,14 +109,13 @@ export default Vue.extend({
     },
 
     // コンテキストメニュー
-    async jContextMenuItems(index: number) {
-      const branch: branchInfo = this.branches[index]
+    async popupMenu(branch: branchInfo) {
       const remoteName = 'origin' // (await this.repo.getRemoteName()).trim()
       const trackingBranchName = `${remoteName}/${branch.name}`
       const remoteBranchName = `remotes/${trackingBranchName}`
       const hasRemote = this.repo.branchSummary.all.includes(remoteBranchName)
 
-      return [
+      remote.Menu.buildFromTemplate([
         // カレントブランチ
         {
           label: `Push (${trackingBranchName})`,
@@ -156,7 +156,7 @@ export default Vue.extend({
           label: 'Create',
           click: () => modalController.openCreateModal(this.repo)
         }
-      ]
+      ]).popup()
     }
   }
 })

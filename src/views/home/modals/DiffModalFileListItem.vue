@@ -1,10 +1,10 @@
 <template>
   <span
-    v-jcontextmenu
     class="file-path"
     :class="{ 'is-current': isCurrent }"
     :title="file.path"
-    @click="setCurrent(file, false)"
+    @click="setCurrent"
+    @contextmenu="popupMenu"
   >
     <span class="dir-name">{{ file.dirName }}</span>
     <span class="file-name">{{ file.fileName }}</span>
@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts">
-import { shell } from 'electron'
+import { remote, shell } from 'electron'
 import { resolve } from 'path'
 import Vue from 'vue'
 import Git from '@/scripts/Git'
@@ -45,13 +45,15 @@ export default Vue.extend({
       )
     }
   },
-  watch: {},
   methods: {
-    setCurrent(file: File) {
-      this.$store.commit('diff/setCurrent', { file, isCached: this.isCached })
+    setCurrent() {
+      this.$store.commit('diff/setCurrent', {
+        file: this.file,
+        isCached: this.isCached
+      })
     },
-    jContextMenuItems() {
-      return [
+    popupMenu() {
+      remote.Menu.buildFromTemplate([
         {
           label: 'Discard Changes',
           enabled: !this.file.hasStaged,
@@ -82,7 +84,7 @@ export default Vue.extend({
             this.repo.diffTool(options)
           }
         }
-      ]
+      ]).popup()
     }
   }
 })
