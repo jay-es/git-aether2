@@ -1,10 +1,5 @@
+import { existsSync, statSync } from 'fs'
 import simplegit from 'simple-git/promise'
-
-declare function git(
-  basePath: string,
-  methodName?: string,
-  ...args: any[]
-): Promise<any>
 
 export default class Git {
   public localBranchNames = [] as string[]
@@ -12,6 +7,7 @@ export default class Git {
   public branchSummary = {} as simplegit.BranchSummary
   public statusResult = {} as simplegit.StatusResult
   public logText = ''
+  private git = {} as simplegit.SimpleGit
 
   constructor(public readonly basePath: string) {}
 
@@ -22,7 +18,7 @@ export default class Git {
 
   // SimpleGit.rawを呼び出すシュガーメソッド
   private raw(commands: string | string[]): Promise<any> {
-    return git(this.basePath, 'raw', commands)
+    return this.git.raw(commands)
   }
 
   addN(file: string): Promise<void> {
@@ -30,7 +26,7 @@ export default class Git {
   }
 
   async branch(): Promise<void> {
-    this.branchSummary = await git(this.basePath, 'branch', ['--all'])
+    this.branchSummary = await this.git.branch(['--all'])
 
     const local = this.branchSummary.all.filter(v => !v.startsWith('remotes/'))
     const track = this.branchSummary.all
@@ -41,11 +37,11 @@ export default class Git {
   }
 
   checkout(what: string | string[]): Promise<void> {
-    return git(this.basePath, 'checkout', what)
+    return this.git.checkout(what)
   }
 
   checkoutBranch(branchName: string, startPoint: string): Promise<void> {
-    return git(this.basePath, 'checkoutBranch', branchName, startPoint)
+    return this.git.checkoutBranch(branchName, startPoint)
   }
 
   delete(branchName: string, force?: boolean): Promise<void> {
@@ -55,7 +51,7 @@ export default class Git {
 
   diff(file: string, isCached: boolean): Promise<string> {
     const options = isCached ? ['--cached', file] : [file]
-    return git(this.basePath, 'diff', options)
+    return this.git.diff(options)
   }
 
   diffTool(options: string[]): Promise<void> {
@@ -65,15 +61,32 @@ export default class Git {
   fetch(options: simplegit.Options): Promise<simplegit.FetchResult>
   fetch(remote: string, branch: string): Promise<simplegit.FetchResult>
   fetch(...args: any[]): Promise<simplegit.FetchResult> {
-    return git(this.basePath, 'fetch', ...args)
+    return this.git.fetch(...args)
   }
 
-  // getRemoteName(): Promise<string> {
-  //   return git(this.basePath, 'remote', ['show'])
+  // getRemoteName(): Promise<string | void> {
+  //   return this.git.remote(['show'])
   // }
 
+  /** インスタンス初期化 */
+  async init(): Promise<string> {
+    // ディレクトリが存在するか確認
+    if (!existsSync(this.basePath) || !statSync(this.basePath).isDirectory()) {
+      return 'Not a directory'
+    }
+
+    this.git = simplegit(this.basePath).silent(true)
+
+    // Gitリポジトリかどうか確認
+    if (!(await this.git.checkIsRepo())) {
+      return 'Not a git repository'
+    }
+
+    return ''
+  }
+
   merge(options: simplegit.Options | string[]): Promise<any> {
-    return git(this.basePath, 'merge', options)
+    return this.git.merge(options)
   }
 
   pull(
@@ -81,7 +94,7 @@ export default class Git {
     branch: string,
     options?: simplegit.Options
   ): Promise<simplegit.PullResult> {
-    return git(this.basePath, 'pull', remote, branch, options)
+    return this.git.pull(remote, branch, options)
   }
 
   push(
@@ -89,7 +102,7 @@ export default class Git {
     branch: string,
     options?: simplegit.Options
   ): Promise<void> {
-    return git(this.basePath, 'push', remote, branch, options)
+    return this.git.push(remote, branch, options)
   }
 
   rename(branchName: string, newName: string): Promise<void> {
@@ -102,7 +115,7 @@ export default class Git {
   }
 
   async status(): Promise<void> {
-    this.statusResult = await git(this.basePath, 'status')
+    this.statusResult = await this.git.status()
   }
 
   /** fileを省略した場合は全ファイル対象 */
@@ -119,15 +132,5 @@ export default class Git {
 
   setLogText(text: any) {
     this.logText = text
-  }
-
-  /** SimpleGitインスタンス作成時のエラーメッセージを取得 */
-  async getInitializeError(): Promise<string> {
-    try {
-      await git(this.basePath)
-      return ''
-    } catch (e) {
-      return e.message
-    }
   }
 }

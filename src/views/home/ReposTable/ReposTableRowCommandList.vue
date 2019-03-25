@@ -9,6 +9,7 @@
 </template>
 
 <script lang="ts">
+import { exec } from 'child_process'
 import Vue from 'vue'
 import Git from '@/scripts/Git'
 import { Command } from '@/store'
@@ -27,7 +28,7 @@ export default Vue.extend({
   },
   methods: {
     exec(commandLine: string) {
-      exec(this.repo.basePath, commandLine)
+      exec(commandLine, { cwd: this.repo.basePath })
     }
   }
 })

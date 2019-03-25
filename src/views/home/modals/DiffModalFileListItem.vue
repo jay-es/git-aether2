@@ -12,12 +12,12 @@
 </template>
 
 <script lang="ts">
+import { shell } from 'electron'
+import { resolve } from 'path'
 import Vue from 'vue'
 import Git from '@/scripts/Git'
 import { CurrentFile } from '@/store/diff'
 import { File } from './DiffModalFileList.vue'
-
-declare function unlink(...paths: string[]): Promise<void>
 
 export default Vue.extend({
   props: {
@@ -60,7 +60,9 @@ export default Vue.extend({
 
             // 新規ファイルなら削除
             if (this.file.workTree === '?') {
-              trash(this.repo.basePath, this.file.path)
+              const fullpath = resolve(this.repo.basePath, this.file.path)
+              shell.moveItemToTrash(fullpath)
+              this.$store.commit('diff/resetCurrent')
               return
             }
 

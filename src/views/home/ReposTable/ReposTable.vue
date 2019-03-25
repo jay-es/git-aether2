@@ -38,9 +38,7 @@ export default Vue.extend({
 
     // リポジトリの配列を作成、エラーがあったら除外
     const repos = pathList.map(v => new Git(v.directory))
-    const errors = await Promise.all(
-      repos.map(async repo => await repo.getInitializeError())
-    )
+    const errors = await Promise.all(repos.map(async repo => await repo.init()))
     this.repositories = repos.filter((v, i) => !errors[i])
   }
 })

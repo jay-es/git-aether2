@@ -58,7 +58,7 @@ export default Vue.extend({
   watch: {
     'rowItem.directory': {
       async handler(v) {
-        this.caution = v ? await new Git(v).getInitializeError() : ''
+        this.caution = v ? await new Git(v).init() : ''
       },
       immediate: true
     }
