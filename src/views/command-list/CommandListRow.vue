@@ -19,6 +19,7 @@
 </template>
 
 <script lang="ts">
+import { confirmDialog } from '@/scripts/electronDialog'
 import Vue from 'vue'
 import { Command } from '@/store'
 
@@ -62,7 +63,7 @@ export default Vue.extend({
       }
 
       // データがあったら確認ダイアログ
-      if (confirm('Remove this row?')) {
+      if (confirmDialog('Remove this row?')) {
         this.list.splice(this.rowIndex, 1)
       }
     }

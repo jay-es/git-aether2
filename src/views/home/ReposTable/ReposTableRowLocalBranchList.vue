@@ -16,6 +16,7 @@
 import { remote } from 'electron'
 import Vue from 'vue'
 import Git from '@/scripts/Git'
+import { confirmDialog, showError } from '@/scripts/electronDialog'
 import modalController from '../modals/modalController'
 
 interface branchInfo {
@@ -48,16 +49,16 @@ export default Vue.extend({
         await this.repo.checkout(branchName)
         this.$emit('change')
       } catch (e) {
-        alert(e.message.replace(/\t/g, '    '))
+        showError(e.message.replace(/\t/g, '    '))
       }
     },
     async delete(branchName: string, force?: boolean): Promise<void> {
-      const confirmText = force
+      const message = force
         ? `The branch '${branchName}' is not fully merged.\n` +
           'Recovering deleted branches is difficult.\nDelete this branch?'
         : 'Delete this branch?'
 
-      if (!confirm(confirmText)) return
+      if (!confirmDialog(message)) return
 
       try {
         await this.repo.delete(branchName, force)
@@ -68,7 +69,7 @@ export default Vue.extend({
           return await this.delete(branchName, true)
         }
 
-        alert(e.message)
+        showError(e.message)
       }
     },
     async pull(remote: string, branch: string) {
@@ -83,7 +84,7 @@ export default Vue.extend({
         this.repo.setLogText(newLogText)
         this.$emit('change')
       } catch (e) {
-        alert(e.message)
+        showError(e.message)
       }
 
       this.toggleAnimation(false)
@@ -95,7 +96,7 @@ export default Vue.extend({
         await this.repo.push(remote, branch, { '-u': null })
         this.$emit('change')
       } catch (e) {
-        alert(e.message)
+        showError(e.message)
       }
 
       this.toggleAnimation(false)

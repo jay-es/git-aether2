@@ -16,6 +16,7 @@ import { remote, shell } from 'electron'
 import { resolve } from 'path'
 import Vue from 'vue'
 import Git from '@/scripts/Git'
+import { confirmDialog } from '@/scripts/electronDialog'
 import { CurrentFile } from '@/store/diff'
 import { File } from './DiffModalFileList.vue'
 
@@ -58,7 +59,7 @@ export default Vue.extend({
           label: 'Discard Changes',
           enabled: !this.file.hasStaged,
           click: () => {
-            if (!confirm('Reset changes?')) return
+            if (!confirmDialog('Reset changes?')) return
 
             // 新規ファイルなら削除
             if (this.file.workTree === '?') {
@@ -69,7 +70,7 @@ export default Vue.extend({
             }
 
             this.repo.checkout(this.file.path)
-            // confirmのあとにfocusが起きるので更新される
+            // ダイアログのあとにfocusが起きるので更新される
           }
         },
         {

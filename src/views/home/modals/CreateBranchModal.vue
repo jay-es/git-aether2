@@ -62,6 +62,7 @@
 
 <script lang="ts">
 import Git from '@/scripts/Git'
+import { showError } from '@/scripts/electronDialog'
 import ModalBase from './ModalBase'
 import modalController from './modalController'
 import BranchList from './BranchList.vue'
@@ -119,7 +120,7 @@ export default ModalBase.extend({
         this.repo.branch()
         this.closeModal()
       } catch (e) {
-        alert(e.message)
+        showError(e.message)
       }
 
       this.$el.classList.remove('is-processing')
