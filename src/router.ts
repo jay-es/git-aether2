@@ -22,6 +22,12 @@ export default new Router({
       name: 'path-list',
       component: () =>
         import(/* webpackChunkName: "path-list" */ './views/path-list/PathList.vue')
+    },
+    {
+      path: '/diff-view',
+      name: 'diff-view',
+      component: () =>
+        import(/* webpackChunkName: "diff-view" */ './views/diff-view/Index.vue')
     }
   ]
 })

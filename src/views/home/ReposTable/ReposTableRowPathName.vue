@@ -13,9 +13,9 @@
 </template>
 
 <script lang="ts">
+import { remote } from 'electron'
 import Vue from 'vue'
 import Git from '@/scripts/Git'
-import modalController from '../modals/modalController'
 
 export default Vue.extend({
   props: {
@@ -37,7 +37,23 @@ export default Vue.extend({
   },
   methods: {
     openDiff() {
-      modalController.openDiffModal(this.repo)
+      // ウィンドウ位置を復元
+      const bounds = JSON.parse(localStorage.getItem('winPos:diff') || '{}')
+
+      const win = new remote.BrowserWindow(Object.assign({}, bounds))
+
+      if (process.env.NODE_ENV !== 'production') {
+        setTimeout(win.webContents.openDevTools, 600)
+      } else {
+        win.setMenu(null)
+      }
+
+      win.loadURL(`${location.href}diff-view?basePath=${this.repo.basePath}`)
+
+      // クローズ時にウィンドウ位置を保存
+      win.on('close', () => {
+        localStorage.setItem('winPos:diff', JSON.stringify(win.getBounds()))
+      })
     }
   }
 })

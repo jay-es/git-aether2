@@ -44,7 +44,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import Git from '@/scripts/Git'
-import ListItem from './DiffModalFileListItem.vue'
+import ListItem from './FileListItem.vue'
 
 export interface File {
   index: string // ステージ済みの記号
