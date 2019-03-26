@@ -18,7 +18,7 @@ export default Vue.extend({
   },
   data() {
     const basePath = this.$route.query.basePath as string
-    const repo = new Git(basePath)
+    const repo: Git = new Git(basePath)
     repo.init()
     repo.status()
 

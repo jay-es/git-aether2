@@ -18,7 +18,7 @@ import Vue from 'vue'
 import Git from '@/scripts/Git'
 import { confirmDialog } from '@/scripts/electronDialog'
 import { CurrentFile } from '@/store/diff'
-import { File } from './DiffModalFileList.vue'
+import { File } from './FileList.vue'
 
 export default Vue.extend({
   props: {
