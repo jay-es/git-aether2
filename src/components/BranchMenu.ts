@@ -99,7 +99,7 @@ export default Vue.extend({
       const remoteBranchName = `remotes/${trackingBranchName}`
       const hasRemote = this.repo.branchSummary.all.includes(remoteBranchName)
 
-      let menuItems = [
+      let menuItems: Electron.MenuItemConstructorOptions[] = [
         // カレントブランチ
         {
           label: `Push (${trackingBranchName})`,

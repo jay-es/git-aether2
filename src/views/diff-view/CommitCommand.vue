@@ -10,14 +10,19 @@
         Commit
       </button>
       <branch-menu :repo="repo" />
+      <button class="block commands" @click="commandMenu">Commands</button>
+      <button class="block" @click="closeWindow">Close</button>
     </div>
   </div>
 </template>
 
 <script lang="ts">
+import { exec } from 'child_process'
+import { remote } from 'electron'
 import Vue from 'vue'
 import Git from '@/scripts/Git'
 import { showError } from '@/scripts/electronDialog'
+import { Command } from '@/store'
 import { CurrentFile } from '@/store/diff'
 import BranchMenu from './CommitBranchMenu.vue'
 
@@ -37,6 +42,9 @@ export default Vue.extend({
     }
   },
   computed: {
+    commandList(): Command[] {
+      return this.$store.state.commandList
+    },
     currentFile(): CurrentFile {
       return this.$store.state.diff.currentFile
     },
@@ -59,6 +67,19 @@ export default Vue.extend({
       } catch (e) {
         showError(e.message)
       }
+    },
+    commandMenu() {
+      const menuItems: Electron.MenuItemConstructorOptions[] = this.commandList.map(
+        command => ({
+          label: command.label,
+          click: () => exec(command.commandLine, { cwd: this.repo.basePath })
+        })
+      )
+
+      remote.Menu.buildFromTemplate(menuItems).popup()
+    },
+    closeWindow() {
+      remote.getCurrentWindow().close()
     }
   }
 })
@@ -70,7 +91,16 @@ export default Vue.extend({
 }
 .buttons {
   margin-left: 6px;
-  width: 60px;
+  width: 70px;
+
+  button {
+    line-height: 14px;
+  }
+}
+.commands {
+  padding-right: 0;
+  padding-left: 0;
+  letter-spacing: -0.5px;
 }
 .j-input {
   flex-grow: 1;
