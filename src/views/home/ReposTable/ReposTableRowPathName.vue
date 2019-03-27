@@ -24,11 +24,6 @@ export default Vue.extend({
       required: true
     }
   },
-  data() {
-    return {
-      winId: 0
-    }
-  },
   computed: {
     changesNum(): number {
       const { files } = this.repo.statusResult
@@ -43,8 +38,11 @@ export default Vue.extend({
   methods: {
     openDiff() {
       // Diffウィンドウがあったらフォーカスして終了
-      if (this.winId) {
-        remote.BrowserWindow.fromId(this.winId).focus()
+      const oldWindow = remote.BrowserWindow.getAllWindows().find(v =>
+        v.getTitle().startsWith(`${this.repo.basePath} `)
+      )
+      if (oldWindow) {
+        oldWindow.focus()
         return
       }
 
@@ -60,13 +58,12 @@ export default Vue.extend({
       }
 
       win.loadURL(`${location.href}diff-view?basePath=${this.repo.basePath}`)
-      this.winId = win.id
 
       win.on('close', () => {
         // ウィンドウ位置を保存
         localStorage.setItem('winPos:diff', JSON.stringify(win.getBounds()))
 
-        this.winId = 0
+        // メインにフォーカス
         remote.getCurrentWindow().focus()
       })
     }
