@@ -49,7 +49,11 @@ export default Vue.extend({
       // ウィンドウ位置を復元
       const bounds = JSON.parse(localStorage.getItem('winPos:diff') || '{}')
 
-      const win = new remote.BrowserWindow(Object.assign({}, bounds))
+      const win = new remote.BrowserWindow(
+        Object.assign(bounds, {
+          autoHideMenuBar: true
+        })
+      )
 
       if (process.env.NODE_ENV !== 'production') {
         setTimeout(win.webContents.openDevTools, 600)
