@@ -157,6 +157,7 @@ export default Vue.extend({
   opacity: 0.75;
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .file-name {
   font-weight: 500;

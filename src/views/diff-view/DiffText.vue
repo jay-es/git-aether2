@@ -147,13 +147,12 @@ export default Vue.extend({
   // コード部分の1文字目（+/-/スペース）
   &:nth-last-child(2) {
     padding-right: 0;
-    border-bottom: 1px dotted var(--borderColor);
     width: 1px;
     user-select: none;
+    color: hsla(0, 0%, 50%, 0.75);
   }
   &:nth-child(2) {
     padding-left: 3px;
-    border-bottom: 1px dotted var(--borderColor);
   }
 }
 </style>
