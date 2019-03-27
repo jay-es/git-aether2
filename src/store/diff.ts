@@ -29,9 +29,6 @@ const state: DiffState = {
 const module: Module<DiffState, RootState> = {
   state,
   mutations: {
-    resetCurrent(state) {
-      state.currentFile = {} as CurrentFile
-    },
     setCurrent(state, { file, isCached }) {
       state.currentFile = {
         isCached: isCached,
@@ -40,8 +37,7 @@ const module: Module<DiffState, RootState> = {
         timestamp: Date.now()
       }
     },
-    setCurrentCached(state, isCached) {
-      state.currentFile.isCached = isCached
+    setCurrentTimestamp(state) {
       state.currentFile.timestamp = Date.now()
     },
     setOption(state, { key, value }) {

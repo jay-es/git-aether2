@@ -41,6 +41,7 @@ export default Vue.extend({
   mounted() {
     window.addEventListener('focus', () => {
       this.repo.status()
+      this.$store.commit('diff/setCurrentTimestamp')
     })
   }
 })

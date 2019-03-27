@@ -44,6 +44,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import Git from '@/scripts/Git'
+import { CurrentFile } from '@/store/diff'
 import ListItem from './FileListItem.vue'
 
 export interface File {
@@ -71,22 +72,21 @@ export default Vue.extend({
       fileList: [] as File[]
     }
   },
+  computed: {
+    currentFile(): CurrentFile {
+      return this.$store.state.diff.currentFile
+    }
+  },
   watch: {
     'repo.statusResult': {
       deep: true,
       handler() {
         this.updateAllFileStatus()
-
-        // タイムスタンプだけ更新
-        this.$store.commit(
-          'diff/setCurrentCached',
-          this.$store.state.diff.currentFile.isCached
-        )
       }
     }
   },
   methods: {
-    // ファイルステータス取得系
+    // ステータス文字列をFileの形式に変換
     createStatus(line: string): File {
       const index = line.charAt(0)
       const workTree = line.charAt(1)
@@ -103,6 +103,7 @@ export default Vue.extend({
         hasStaged: index !== ' ' && index !== '?'
       }
     },
+    // 全ファイルステータス更新
     async updateAllFileStatus() {
       const res = await this.repo.statusShort()
 
@@ -112,36 +113,54 @@ export default Vue.extend({
         .map(line => this.createStatus(line))
         .sort((a, b) => (a.path.toLowerCase() > b.path.toLowerCase() ? 1 : -1))
     },
-    // 全部更新してしまうと反応が遅い & 連続クリックで表示くずれるので1ファイルだけのメソッドが必要
+    // 1ファイルステータス更新 （毎回全ファイル更新してしまうと反応が遅い & 連続クリックで表示くずれる）
     async updateFileStatus(file: File, index: number) {
       const res = await this.repo.statusShort(file.path)
-      this.$set(this.fileList, index, this.createStatus(res))
+      return this.$set(this.fileList, index, this.createStatus(res))
     },
 
     // ステージ変更系
     async stage(file: File, index: number) {
-      // file.hasStaged = true
-      // file.hasUnstaged = false
+      // ステージ登録してステータス更新
       await this.repo.stage(file.path)
-      this.updateFileStatus(file, index)
-      this.$store.commit('diff/setCurrentCached', true) // currentFile の isCached を変更
+      const saved = await this.updateFileStatus(file, index)
+
+      // カレントに反映
+      if (file.path === this.currentFile.path) {
+        this.$store.commit('diff/setCurrent', { file: saved, isCached: true })
+      }
     },
     async unstage(file: File, index: number) {
-      // file.hasStaged = false
-      // file.hasUnstaged = true
+      // ステージ解除してステータス更新
       await this.repo.unstage(file.path)
-      this.updateFileStatus(file, index)
-      this.$store.commit('diff/setCurrentCached', false)
+      const saved = await this.updateFileStatus(file, index)
+
+      // カレントに反映
+      if (file.path === this.currentFile.path) {
+        this.$store.commit('diff/setCurrent', { file: saved, isCached: false })
+      }
     },
     async stageAll() {
+      // ステージ登録してステータス更新
       await this.repo.stage()
-      this.updateAllFileStatus()
-      this.$store.commit('diff/setCurrentCached', true)
+      await this.updateAllFileStatus()
+
+      // カレントに反映
+      this.fileList.forEach(file => {
+        if (file.path !== this.currentFile.path) return
+        this.$store.commit('diff/setCurrent', { file, isCached: true })
+      })
     },
     async unstageAll() {
+      // ステージ解除してステータス更新
       await this.repo.unstage()
-      this.updateAllFileStatus()
-      this.$store.commit('diff/setCurrentCached', false)
+      await this.updateAllFileStatus()
+
+      // カレントに反映
+      this.fileList.forEach(file => {
+        if (file.path !== this.currentFile.path) return
+        this.$store.commit('diff/setCurrent', { file, isCached: false })
+      })
     }
   }
 })
