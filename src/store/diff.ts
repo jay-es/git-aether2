@@ -8,12 +8,22 @@ export interface CurrentFile {
   timestamp: number
 }
 
+export interface DiffOptions {
+  ignoreWhitespace: string
+  tabSize: number
+}
+
 interface DiffState {
   currentFile: CurrentFile
+  diffOptions: DiffOptions
 }
 
 const state: DiffState = {
-  currentFile: {} as CurrentFile
+  currentFile: {} as CurrentFile,
+  diffOptions: {
+    ignoreWhitespace: '',
+    tabSize: 4
+  }
 }
 
 const module: Module<DiffState, RootState> = {
@@ -33,6 +43,15 @@ const module: Module<DiffState, RootState> = {
     setCurrentCached(state, isCached) {
       state.currentFile.isCached = isCached
       state.currentFile.timestamp = Date.now()
+    },
+    setOption(state, { key, value }) {
+      if (key === 'ignoreWhitespace') {
+        state.diffOptions.ignoreWhitespace = value
+      } else if (key === 'tabSize') {
+        state.diffOptions.tabSize = value
+      } else {
+        throw new Error()
+      }
     }
   },
   namespaced: true

@@ -1,7 +1,12 @@
 <template>
   <section class="diff-wrap">
-    <file-list class="col" :repo="repo" />
-    <diff-text class="col" :repo="repo" />
+    <div class="row">
+      <file-list class="col" :repo="repo" />
+      <diff-text class="col" :repo="repo" />
+    </div>
+    <div class="row">
+      <diff-options />
+    </div>
   </section>
 </template>
 
@@ -9,11 +14,13 @@
 import Vue from 'vue'
 import Git from '@/scripts/Git'
 import FileList from './FileList.vue'
+import DiffOptions from './DiffOptions.vue'
 import DiffText from './DiffText.vue'
 
 export default Vue.extend({
   components: {
     FileList,
+    DiffOptions,
     DiffText
   },
   data() {
@@ -41,9 +48,21 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .diff-wrap {
-  display: flex;
   height: calc(100vh - 16px);
 }
+.row {
+  $bottom-height: 82px;
+  display: flex;
+
+  &:nth-child(1) {
+    padding-bottom: 0.5em;
+    height: calc(100% - 0.5em - #{$bottom-height});
+  }
+  &:nth-child(2) {
+    height: $bottom-height;
+  }
+}
+
 .col:nth-child(1) {
   padding-bottom: 10px;
   width: 190px;

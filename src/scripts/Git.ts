@@ -49,9 +49,9 @@ export default class Git {
     return this.raw(['branch', option, branchName])
   }
 
-  diff(file: string, isCached: boolean): Promise<string> {
-    const options = isCached ? ['--cached', file] : [file]
-    return this.git.diff(options)
+  diff(file: string, options: string[]): Promise<string> {
+    const commands = ['diff', ...options, '--', file].filter(v => v !== '')
+    return this.raw(commands)
   }
 
   diffTool(options: string[]): Promise<void> {
