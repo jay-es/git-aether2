@@ -9,6 +9,7 @@
       <button class="block" :disabled="isBtnDisabled" @click="commit">
         Commit
       </button>
+      <branch-menu :repo="repo" />
     </div>
   </div>
 </template>
@@ -18,8 +19,12 @@ import Vue from 'vue'
 import Git from '@/scripts/Git'
 import { showError } from '@/scripts/electronDialog'
 import { CurrentFile } from '@/store/diff'
+import BranchMenu from './CommitBranchMenu.vue'
 
 export default Vue.extend({
+  components: {
+    BranchMenu
+  },
   props: {
     repo: {
       type: Object as () => Git,
@@ -64,7 +69,7 @@ export default Vue.extend({
   display: flex;
 }
 .buttons {
-  padding-left: 6px;
+  margin-left: 6px;
   width: 60px;
 }
 .j-input {

@@ -8,12 +8,14 @@
       <diff-options class="bottom-col" />
       <commit-command class="bottom-col" :repo="repo" />
     </div>
+    <merge-branch-modal />
   </section>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 import Git from '@/scripts/Git'
+import MergeBranchModal from '@/views/home/modals/MergeBranchModal.vue'
 import FileList from './FileList.vue'
 import DiffOptions from './DiffOptions.vue'
 import DiffText from './DiffText.vue'
@@ -24,13 +26,15 @@ export default Vue.extend({
     FileList,
     DiffOptions,
     DiffText,
-    CommitCommand
+    CommitCommand,
+    MergeBranchModal
   },
   data() {
     const basePath = this.$route.query.basePath as string
     const repo: Git = new Git(basePath)
     repo.init()
     repo.status()
+    repo.branch()
 
     return {
       repo
@@ -44,6 +48,7 @@ export default Vue.extend({
   mounted() {
     window.addEventListener('focus', () => {
       this.repo.status()
+      this.repo.branch()
       this.$store.commit('diff/setCurrentTimestamp')
     })
   }
