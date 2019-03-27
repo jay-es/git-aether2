@@ -29,6 +29,9 @@ const state: DiffState = {
 const module: Module<DiffState, RootState> = {
   state,
   mutations: {
+    resetCurrent(state) {
+      state.currentFile = {} as CurrentFile
+    },
     setCurrent(state, { file, isCached }) {
       state.currentFile = {
         isCached: isCached,

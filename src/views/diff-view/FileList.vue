@@ -124,6 +124,7 @@ export default Vue.extend({
       // ステージ登録してステータス更新
       await this.repo.stage(file.path)
       const saved = await this.updateFileStatus(file, index)
+      this.repo.status()
 
       // カレントに反映
       if (file.path === this.currentFile.path) {
@@ -134,6 +135,7 @@ export default Vue.extend({
       // ステージ解除してステータス更新
       await this.repo.unstage(file.path)
       const saved = await this.updateFileStatus(file, index)
+      this.repo.status()
 
       // カレントに反映
       if (file.path === this.currentFile.path) {
@@ -144,6 +146,7 @@ export default Vue.extend({
       // ステージ登録してステータス更新
       await this.repo.stage()
       await this.updateAllFileStatus()
+      this.repo.status()
 
       // カレントに反映
       this.fileList.forEach(file => {
@@ -155,6 +158,7 @@ export default Vue.extend({
       // ステージ解除してステータス更新
       await this.repo.unstage()
       await this.updateAllFileStatus()
+      this.repo.status()
 
       // カレントに反映
       this.fileList.forEach(file => {

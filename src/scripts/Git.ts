@@ -44,6 +44,10 @@ export default class Git {
     return this.git.checkoutBranch(branchName, startPoint)
   }
 
+  commit(message: string): Promise<simplegit.CommitSummary> {
+    return this.git.commit(message)
+  }
+
   delete(branchName: string, force?: boolean): Promise<void> {
     const option = force ? '-D' : '-d'
     return this.raw(['branch', option, branchName])

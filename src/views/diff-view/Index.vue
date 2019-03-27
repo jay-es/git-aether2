@@ -1,11 +1,12 @@
 <template>
   <section class="diff-wrap">
     <div class="row">
-      <file-list class="col" :repo="repo" />
-      <diff-text class="col" :repo="repo" />
+      <file-list class="top-col" :repo="repo" />
+      <diff-text class="top-col" :repo="repo" />
     </div>
     <div class="row">
-      <diff-options />
+      <diff-options class="bottom-col" />
+      <commit-command class="bottom-col" :repo="repo" />
     </div>
   </section>
 </template>
@@ -16,12 +17,14 @@ import Git from '@/scripts/Git'
 import FileList from './FileList.vue'
 import DiffOptions from './DiffOptions.vue'
 import DiffText from './DiffText.vue'
+import CommitCommand from './CommitCommand.vue'
 
 export default Vue.extend({
   components: {
     FileList,
     DiffOptions,
-    DiffText
+    DiffText,
+    CommitCommand
   },
   data() {
     const basePath = this.$route.query.basePath as string
@@ -64,14 +67,20 @@ export default Vue.extend({
   }
 }
 
-.col:nth-child(1) {
+.top-col:nth-child(1) {
   padding-bottom: 10px;
   width: 190px;
   min-width: 190px;
   resize: horizontal;
   overflow: auto;
 }
-.col:nth-child(2) {
+.top-col:nth-child(2) {
+  flex-grow: 1;
+}
+.bottom-col:nth-child(1) {
+  width: 190px;
+}
+.bottom-col:nth-child(2) {
   flex-grow: 1;
 }
 </style>
