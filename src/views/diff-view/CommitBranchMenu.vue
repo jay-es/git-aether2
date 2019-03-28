@@ -5,13 +5,13 @@
 </template>
 
 <script lang="ts">
-import BranchMenu, { branchInfo } from '@/components/BranchMenu'
+import BranchMenu, { BranchInfo } from '@/components/BranchMenu'
 
 export default BranchMenu.extend({
   computed: {
-    currentBranch(): branchInfo {
+    currentBranch(): BranchInfo | undefined {
       return Object.values(this.repo.branchSummary.branches || {}).find(
-        v => v.current
+        v => !!v.current
       )
     }
   },

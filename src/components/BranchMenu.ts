@@ -4,8 +4,8 @@ import Git from '@/scripts/Git'
 import { confirmDialog, showError } from '@/scripts/electronDialog'
 import modalController from '@/views/home/modals/modalController'
 
-export interface branchInfo {
-  current: boolean
+export interface BranchInfo {
+  current: boolean | string
   name: string
   commit: string
   label: string
@@ -93,7 +93,7 @@ export default Vue.extend({
     },
 
     // コンテキストメニュー
-    async popupMenu(branch: branchInfo) {
+    async popupMenu(branch: BranchInfo) {
       const remoteName = 'origin' // (await this.repo.getRemoteName()).trim()
       const trackingBranchName = `${remoteName}/${branch.name}`
       const remoteBranchName = `remotes/${trackingBranchName}`
@@ -103,17 +103,17 @@ export default Vue.extend({
         // カレントブランチ
         {
           label: `Push (${trackingBranchName})`,
-          enabled: branch.current,
+          enabled: <boolean>branch.current,
           click: () => this.push(remoteName, branch.name)
         },
         {
           label: `Pull (${trackingBranchName})`,
-          enabled: branch.current && hasRemote,
+          enabled: <boolean>branch.current && hasRemote,
           click: () => this.pull(remoteName, branch.name)
         },
         {
           label: 'Merge',
-          enabled: branch.current,
+          enabled: <boolean>branch.current,
           click: () => modalController.openMergeModal(this.repo, branch.name)
         },
         { type: 'separator' },

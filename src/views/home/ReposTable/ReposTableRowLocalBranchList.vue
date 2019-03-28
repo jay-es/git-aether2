@@ -13,11 +13,11 @@
 </template>
 
 <script lang="ts">
-import BranchMenu, { branchInfo } from '@/components/BranchMenu'
+import BranchMenu, { BranchInfo } from '@/components/BranchMenu'
 
 export default BranchMenu.extend({
   computed: {
-    branches(): branchInfo[] {
+    branches(): BranchInfo[] {
       return Object.values(this.repo.branchSummary.branches || {}).filter(
         v => !v.name.startsWith('remotes/')
       )
