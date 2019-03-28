@@ -117,6 +117,16 @@ export default class Git {
     return this.raw(['add', file || '--all'])
   }
 
+  stagePartial(file: string, isCached: boolean): Promise<void> {
+    return this.raw([
+      'apply',
+      '--cached',
+      '--ignore-whitespace',
+      isCached ? '-R' : '',
+      file
+    ])
+  }
+
   async status(): Promise<void> {
     this.statusResult = await this.git.status()
   }
