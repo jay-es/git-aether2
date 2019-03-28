@@ -17,8 +17,8 @@ export default class Git {
   }
 
   // SimpleGit.rawを呼び出すシュガーメソッド
-  private raw(commands: string | string[]): Promise<any> {
-    return this.git.raw(commands)
+  private raw(commands: string[]): Promise<any> {
+    return this.git.raw(commands.filter(v => v !== ''))
   }
 
   addN(file: string): Promise<void> {
@@ -54,8 +54,7 @@ export default class Git {
   }
 
   diff(file: string, options: string[]): Promise<string> {
-    const commands = ['diff', ...options, '--', file].filter(v => v !== '')
-    return this.raw(commands)
+    return this.raw(['diff', ...options, '--', file])
   }
 
   diffTool(options: string[]): Promise<void> {
@@ -124,14 +123,13 @@ export default class Git {
 
   /** fileを省略した場合は全ファイル対象 */
   async statusShort(file?: string): Promise<string> {
-    const commands = file ? ['status', '--short', file] : ['status', '--short']
-    return (await this.raw(commands)) || '' // 変更ファイルがないとnullが返ってくる
+    // 変更ファイルがないとnullが返ってくる
+    return (await this.raw(['status', '--short', file || ''])) || ''
   }
 
   /** fileを省略した場合は全ファイル対象 */
   unstage(file?: string): Promise<void> {
-    const commands = file ? ['reset', 'HEAD', file] : ['reset', 'HEAD']
-    return this.raw(commands)
+    return this.raw(['reset', 'HEAD', file || ''])
   }
 
   setLogText(text: any) {
