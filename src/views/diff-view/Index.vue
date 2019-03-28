@@ -2,7 +2,7 @@
   <section class="diff-wrap">
     <div class="row">
       <file-list class="top-col" :repo="repo" />
-      <diff-text class="top-col" :repo="repo" />
+      <diff-disp class="top-col" :repo="repo" />
     </div>
     <div class="row">
       <diff-options class="bottom-col" />
@@ -18,14 +18,14 @@ import Git from '@/scripts/Git'
 import MergeBranchModal from '@/views/home/modals/MergeBranchModal.vue'
 import FileList from './FileList.vue'
 import DiffOptions from './DiffOptions.vue'
-import DiffText from './DiffText.vue'
+import DiffDisp from './DiffDisp.vue'
 import CommitCommand from './CommitCommand.vue'
 
 export default Vue.extend({
   components: {
     FileList,
     DiffOptions,
-    DiffText,
+    DiffDisp,
     CommitCommand,
     MergeBranchModal
   },

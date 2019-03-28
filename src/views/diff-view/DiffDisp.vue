@@ -1,28 +1,17 @@
 <template>
-  <div class="diff-text">
-    <div v-if="!difflines.length" class="simple-diff">
+  <div class="diff-disp" :class="tabClass">
+    <div v-if="!diffLines.length" class="simple-diff">
       <code class="simple-diff-col">No Diff</code>
     </div>
     <div v-else-if="isTooMany" class="simple-diff">
       <code class="simple-diff-col">Too Many Diffs</code>
     </div>
-    <table v-else class="simple-diff" :class="tabClass">
-      <tr v-for="(line, i) in difflines" :key="i">
-        <template v-if="line.type === 'header' || line.type === 'hunk'">
-          <td class="simple-diff-col" :class="line.type" colspan="2">
-            <code v-text="line.text" />
-          </td>
-        </template>
-        <template v-else>
-          <td class="simple-diff-col" :class="line.type">
-            <code v-text="line.text.charAt(0)" />
-          </td>
-          <td class="simple-diff-col" :class="line.type">
-            <code v-text="line.text.substr(1)" />
-          </td>
-        </template>
-      </tr>
-    </table>
+    <diff-disp-table
+      v-else
+      class="simple-diff"
+      :diff-lines="diffLines"
+      :repo="repo"
+    />
   </div>
 </template>
 
@@ -30,13 +19,17 @@
 import Vue from 'vue'
 import Git from '@/scripts/Git'
 import { CurrentFile, DiffOptions } from '@/store/diff'
+import DiffDispTable from './DiffDispTable.vue'
 
-interface DiffLine {
+export interface DiffLine {
   text: string
   type: string
 }
 
 export default Vue.extend({
+  components: {
+    DiffDispTable
+  },
   props: {
     repo: {
       type: Object as () => Git,
@@ -45,12 +38,12 @@ export default Vue.extend({
   },
   data() {
     return {
-      difflines: [] as DiffLine[]
+      diffLines: [] as DiffLine[]
     }
   },
   computed: {
     isTooMany(): boolean {
-      return this.difflines.reduce((acc, v) => acc + v.text.length, 0) > 1e6
+      return this.diffLines.reduce((acc, v) => acc + v.text.length, 0) > 1e6
     },
     tabClass(): string {
       return `tab-size-${this.diffOptions.tabSize}`
@@ -95,7 +88,7 @@ export default Vue.extend({
       ])
 
       if (!diffText) {
-        this.difflines = []
+        this.diffLines = []
         return
       }
 
@@ -104,7 +97,7 @@ export default Vue.extend({
         '-': 'del'
       }
 
-      this.difflines = diffText
+      this.diffLines = diffText
         .split('\n')
         .slice(0, -1)
         .map((text: string, i: number) => {
@@ -133,7 +126,7 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-.diff-text {
+.diff-disp {
   background-color: var(--diff-bgColor);
   border: 1px solid var(--borderColor);
   overflow: auto;
@@ -157,30 +150,5 @@ export default Vue.extend({
 .simple-diff-col {
   padding: 0 0.5em;
   white-space: pre;
-
-  &.ins {
-    background-color: var(--diff-bgColor-ins);
-    color: var(--diff-fontColor-ins);
-  }
-  &.del {
-    background-color: var(--diff-bgColor-del);
-    color: var(--diff-fontColor-del);
-  }
-  &.hunk {
-    background-color: var(--diff-bgColor-info);
-    line-height: 1.6;
-    opacity: 0.75;
-  }
-
-  // コード部分の1文字目（+/-/スペース）
-  &:nth-last-child(2) {
-    padding-right: 0;
-    width: 1px;
-    user-select: none;
-    color: hsla(0, 0%, 50%, 0.75);
-  }
-  &:nth-child(2) {
-    padding-left: 3px;
-  }
 }
 </style>
