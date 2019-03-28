@@ -3,6 +3,9 @@
     <div v-if="!difflines.length" class="simple-diff">
       <code class="simple-diff-col">No Diff</code>
     </div>
+    <div v-else-if="isTooMany" class="simple-diff">
+      <code class="simple-diff-col">Too Many Diffs</code>
+    </div>
     <table v-else class="simple-diff" :class="tabClass">
       <tr v-for="(line, i) in difflines" :key="i">
         <template v-if="line.type === 'header' || line.type === 'hunk'">
@@ -46,6 +49,9 @@ export default Vue.extend({
     }
   },
   computed: {
+    isTooMany(): boolean {
+      return this.difflines.reduce((acc, v) => acc + v.text.length, 0) > 1e6
+    },
     tabClass(): string {
       return `tab-size-${this.diffOptions.tabSize}`
     },
