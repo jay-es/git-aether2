@@ -161,7 +161,6 @@ export default Vue.extend({
     color: var(--diff-fontColor-del);
   }
   &.hunk {
-    border-top: 0.75em solid var(--diff-bgColor);
     background-color: var(--diff-bgColor-info);
     line-height: 1.6;
     opacity: 0.75;
