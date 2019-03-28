@@ -122,12 +122,71 @@ export default Vue.extend({
         {
           label: `${stageLabel} ${lineLabel} For Commit`,
           enabled: this.rangeStart >= hunkStart && this.rangeEnd <= hunkEnd,
-          click: () => {}
+          click: () => {
+            const hunk = this.makeHunk(
+              hunkStart,
+              hunkEnd,
+              this.rangeStart,
+              this.rangeEnd
+            )
+            this.stageHunk(hunk)
+          }
         }
       ]).popup()
     },
+    makeHunk(
+      hunkStart: number,
+      hunkEnd: number,
+      rangeStart: number,
+      rangeEnd: number
+    ): string[] {
+      const lines: string[] = []
+      let del = 0
+      let ins = 0
+
+      this.diffLines.forEach((v, i) => {
+        // コード範囲外なら終了
+        if (i <= hunkStart || i > hunkEnd) return
+
+        // 差分がない
+        if (!v.type) {
+          del++
+          ins++
+          lines.push(v.text)
+          return
+        }
+
+        // 選択範囲内
+        if (i >= rangeStart && i <= rangeEnd) {
+          if (v.type === 'del') {
+            del++
+          } else if (v.type === 'ins') {
+            ins++
+          }
+
+          lines.push(v.text)
+          return
+        }
+
+        // 選択範囲外のdelは変更なしに戻す
+        if (v.type === 'del') {
+          del++
+          ins++
+          lines.push(v.text.replace(/^-/, ' '))
+        }
+      })
+
+      // Hunkヘッダ作成
+      const header = this.diffLines[hunkStart].text.replace(
+        /^(@@ -\d+,)\d+( \+\d+,)\d+( .*)$/,
+        `$1${del}$2${ins}$3`
+      )
+      lines.unshift(header)
+
+      return lines
+    },
     async stageHunk(hunkLines: string[]) {
-      // ヘッダー追加
+      // ファイルヘッダ追加
       hunkLines.unshift(
         ...this.diffLines.filter(v => v.type === 'header').map(v => v.text)
       )
