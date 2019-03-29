@@ -1,5 +1,5 @@
 <template>
-  <div class="diff-file-list">
+  <div class="diff-file-list" tabindex="-1" @keydown="moveCursor($event.key)">
     <p class="list-title">Unstaged Changes</p>
     <ul class="j-list file-list">
       <li
@@ -86,6 +86,51 @@ export default Vue.extend({
     }
   },
   methods: {
+    // 上下キーでカレントファイル変更
+    moveCursor(key: string) {
+      if (key !== 'ArrowUp' && key !== 'ArrowDown') return
+
+      const activeProp = this.currentFile.isCached ? 'hasStaged' : 'hasUnstaged'
+      const otherProp = this.currentFile.isCached ? 'hasUnstaged' : 'hasStaged'
+      const activeList = this.fileList.filter(v => v[activeProp])
+      const otherList = this.fileList.filter(v => v[otherProp])
+
+      const currentIndex = activeList.findIndex(
+        v => v.path === this.currentFile.path
+      )
+
+      let isCached = this.currentFile.isCached
+      let targetFile: File
+
+      if (key === 'ArrowUp') {
+        if (currentIndex > 0) {
+          // ひとつ上
+          targetFile = activeList[currentIndex - 1]
+        } else if (otherList.length) {
+          // 別リストの一番下
+          targetFile = otherList.pop() as File
+          isCached = !isCached
+        } else {
+          // リストの一番下
+          targetFile = activeList.pop() as File
+        }
+      } else {
+        if (currentIndex < activeList.length - 1) {
+          // ひとつ下
+          targetFile = activeList[currentIndex + 1]
+        } else if (otherList.length) {
+          // 別リストの一番上
+          targetFile = otherList.shift() as File
+          isCached = !isCached
+        } else {
+          // リストの一番上
+          targetFile = activeList.shift() as File
+        }
+      }
+
+      this.$store.commit('diff/setCurrent', { file: targetFile, isCached })
+    },
+
     // ステータス文字列をFileの形式に変換
     createStatus(line: string): File {
       const index = line.charAt(0)
