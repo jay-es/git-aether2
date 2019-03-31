@@ -103,7 +103,11 @@ export default ModalBase.extend({
         if (this.noCommit) options.push('--no-ff', '--no-commit')
 
         const res = await this.repo.merge(options)
-        this.repo.setLogText(res)
+        const newLogText = Object.entries(res.summary)
+          .map(([k, v]) => `${k}: ${v}`)
+          .join('\n')
+
+        this.repo.setLogText(newLogText)
         this.closeModal()
       } catch (e) {
         showError(e.message)
