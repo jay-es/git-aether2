@@ -13,6 +13,7 @@
 </template>
 
 <script lang="ts">
+import { remote } from 'electron'
 import Vue from 'vue'
 import Git from '@/scripts/Git'
 import MergeBranchModal from '@/views/home/modals/MergeBranchModal.vue'
@@ -50,6 +51,12 @@ export default Vue.extend({
       this.repo.status()
       this.repo.branch()
       this.$store.commit('diff/setCurrentTimestamp')
+    })
+
+    // クローズ時にウィンドウ位置を保存
+    window.addEventListener('beforeunload', () => {
+      const win = remote.getCurrentWindow()
+      localStorage.setItem('winPos:diff', JSON.stringify(win.getBounds()))
     })
   }
 })

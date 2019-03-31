@@ -55,21 +55,7 @@ export default Vue.extend({
         })
       )
 
-      if (process.env.NODE_ENV !== 'production') {
-        setTimeout(win.webContents.openDevTools, 600)
-      } else {
-        win.setMenu(null)
-      }
-
       win.loadURL(`${location.href}diff-view?basePath=${this.repo.basePath}`)
-
-      win.on('close', () => {
-        // ウィンドウ位置を保存
-        localStorage.setItem('winPos:diff', JSON.stringify(win.getBounds()))
-
-        // メインにフォーカス
-        remote.getCurrentWindow().focus()
-      })
     }
   }
 })
