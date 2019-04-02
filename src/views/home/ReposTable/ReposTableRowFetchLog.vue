@@ -21,8 +21,7 @@ export default Vue.extend({
   },
   data() {
     return {
-      isFetching: false,
-      timerId: 0
+      isFetching: false
     }
   },
   computed: {
@@ -33,10 +32,11 @@ export default Vue.extend({
   created() {
     const run = () => window.setTimeout(this.fetch, this.rowIndex * 600)
     window.setTimeout(run, 1000)
-    this.timerId = window.setInterval(run, 5 * 60000)
-  },
-  destroyed() {
-    window.clearInterval(this.timerId)
+    const timerId = window.setInterval(run, 5 * 60000)
+
+    this.$once('hook:beforeDestroy', () => {
+      window.clearInterval(timerId)
+    })
   },
   methods: {
     async fetch() {

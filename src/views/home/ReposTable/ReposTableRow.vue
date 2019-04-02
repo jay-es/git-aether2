@@ -46,11 +46,21 @@ export default Vue.extend({
     }
   },
   created() {
-    this.refresh()
-    window.addEventListener('focus', this.refresh)
-  },
-  destroyed() {
-    window.removeEventListener('focus', this.refresh)
+    const run = () => window.setTimeout(this.refresh, this.rowIndex * 50)
+
+    run()
+    window.addEventListener('focus', run)
+
+    // ウィンドウがアクティブじゃない時、定期的に更新
+    const timerId = window.setInterval(() => {
+      if (document.hasFocus()) return
+      run()
+    }, 10 * 1000)
+
+    this.$once('hook:beforeDestroy', () => {
+      window.removeEventListener('focus', run)
+      window.clearInterval(timerId)
+    })
   },
   methods: {
     refresh() {

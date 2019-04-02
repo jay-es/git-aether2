@@ -47,17 +47,26 @@ export default Vue.extend({
     }
   },
   mounted() {
-    window.addEventListener('focus', () => {
-      this.repo.status()
-      this.repo.branch()
-      this.$store.commit('diff/setCurrentTimestamp')
-    })
+    window.addEventListener('focus', this.refresh)
+
+    // ウィンドウがアクティブじゃない時、定期的に更新
+    window.setInterval(() => {
+      if (document.hasFocus()) return
+      this.refresh()
+    }, 5000)
 
     // クローズ時にウィンドウ位置を保存
     window.addEventListener('beforeunload', () => {
       const win = remote.getCurrentWindow()
       localStorage.setItem('winPos:diff', JSON.stringify(win.getBounds()))
     })
+  },
+  methods: {
+    refresh() {
+      this.repo.status()
+      this.repo.branch()
+      this.$store.commit('diff/setCurrentTimestamp')
+    }
   }
 })
 </script>
