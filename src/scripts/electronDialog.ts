@@ -2,7 +2,7 @@ import { remote } from 'electron'
 
 export const showError = (message: string) => {
   remote.dialog.showMessageBox(remote.getCurrentWindow(), {
-    message,
+    message: message.replace(/\t/g, '    '),
     type: 'error'
   })
 }

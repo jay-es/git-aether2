@@ -40,10 +40,6 @@ export default class Git {
     return this.git.checkout(what)
   }
 
-  checkoutBranch(branchName: string, startPoint: string): Promise<void> {
-    return this.git.checkoutBranch(branchName, startPoint)
-  }
-
   commit(message: string): Promise<simplegit.CommitSummary> {
     return this.git.commit(message)
   }

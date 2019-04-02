@@ -116,7 +116,7 @@ export default ModalBase.extend({
           await this.repo.fetch(remote, branch)
         }
 
-        await this.repo.checkoutBranch(this.newBranchName, this.targetBranch)
+        await this.repo.checkout(['-b', this.newBranchName, this.targetBranch])
         this.repo.branch()
         this.closeModal()
       } catch (e) {

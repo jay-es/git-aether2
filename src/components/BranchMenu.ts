@@ -32,7 +32,7 @@ export default Vue.extend({
         await this.repo.checkout(branchName)
         this.$emit('change')
       } catch (e) {
-        showError(e.message.replace(/\t/g, '    '))
+        showError(e.message)
       }
     },
     async delete(branchName: string, force?: boolean): Promise<void> {
