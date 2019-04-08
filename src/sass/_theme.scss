@@ -1,11 +1,11 @@
 .theme-light {
-  $accColor: #4d89c1;
+  $accColor: hsl(263, 70%, 60%); // #4d89c1
   --bgColor: #fafafa;
   --fontColor: #333;
   --fontColor-deep: #111;
   --borderColor: #e5e5e5;
   --linkColor: #{$accColor};
-  --linkColor-hover: #{saturate(darken($accColor, 20%), 20%)};
+  --linkColor-hover: #{saturate(darken($accColor, 25%), 25%)};
   --linkColor-active: #{saturate(darken($accColor, 40%), 40%)};
 
   --input-bgColor: #{darken(#fff, 0%)};

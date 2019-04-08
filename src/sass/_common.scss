@@ -37,8 +37,13 @@ a {
   cursor: pointer;
   user-select: none;
 
-  &:hover { color: var(--linkColor-hover); }
-  &:active { color: var(--linkColor-active); }
+  &:hover {
+    color: var(--linkColor-hover);
+    text-decoration: none;
+  }
+  &:active {
+    color: var(--linkColor-active);
+  }
 }
 
 pre, code {
