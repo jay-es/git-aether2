@@ -48,6 +48,7 @@ export default Vue.extend({
 .repos-table {
   td {
     padding: 0;
+    max-width: 33vw;
   }
 
   .cell {

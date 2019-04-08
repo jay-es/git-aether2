@@ -59,6 +59,5 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .fetch-log {
   min-width: 12em;
-  max-width: 33vw;
 }
 </style>
