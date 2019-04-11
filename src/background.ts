@@ -19,6 +19,7 @@ function createWindow() {
     width: 800,
     height: 600,
     autoHideMenuBar: true,
+    icon: __static + '/favicon.ico',
     show: false
   })
 
