@@ -37,6 +37,8 @@ export default Vue.extend({
     this.$once('hook:beforeDestroy', () => {
       window.clearInterval(timerId)
     })
+
+    this.$parent.$on('fetchAllPrune', this.fetch)
   },
   methods: {
     async fetch() {

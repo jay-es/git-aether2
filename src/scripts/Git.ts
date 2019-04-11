@@ -9,7 +9,10 @@ export default class Git {
   public logText = ''
   private git = {} as simplegit.SimpleGit
 
-  constructor(public readonly basePath: string) {}
+  constructor(
+    public readonly basePath: string,
+    public readonly github?: string
+  ) {}
 
   // 配列の要素を消して、新しい要素を入れる
   private static replaceArray<T>(arr: T[], newArr: T[]) {

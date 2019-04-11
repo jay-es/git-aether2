@@ -1,5 +1,5 @@
 <template>
-  <div class="cell">
+  <div class="cell" @contextmenu="popupMenu">
     {{ repo.basePath }}<br />
     <p class="changes">
       <template v-if="changesNum">
@@ -13,7 +13,7 @@
 </template>
 
 <script lang="ts">
-import { remote } from 'electron'
+import { remote, shell } from 'electron'
 import Vue from 'vue'
 import Git from '@/scripts/Git'
 
@@ -56,6 +56,47 @@ export default Vue.extend({
       )
 
       win.loadURL(`${location.href}diff-view?basePath=${this.repo.basePath}`)
+    },
+    popupMenu() {
+      const menuItems: Electron.MenuItemConstructorOptions[] = [
+        {
+          label: 'Git',
+          submenu: [
+            {
+              label: 'fetch --all --prune',
+              click: () => this.$parent.$emit('fetchAllPrune')
+            }
+          ]
+        }
+      ]
+
+      if (this.repo.github) {
+        const githubUrl = `https://github.com/${this.repo.github}`
+
+        menuItems.push({
+          label: 'GitHub',
+          submenu: [
+            {
+              label: 'Home',
+              click: () => shell.openExternal(githubUrl)
+            },
+            {
+              label: 'Branches',
+              click: () => shell.openExternal(`${githubUrl}/branches`)
+            },
+            {
+              label: 'Issues',
+              click: () => shell.openExternal(`${githubUrl}/issues`)
+            },
+            {
+              label: 'Pull requests',
+              click: () => shell.openExternal(`${githubUrl}/pulls`)
+            }
+          ]
+        })
+      }
+
+      remote.Menu.buildFromTemplate(menuItems).popup()
     }
   }
 })
