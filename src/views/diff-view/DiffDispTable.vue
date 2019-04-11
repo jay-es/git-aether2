@@ -127,7 +127,8 @@ export default Vue.extend({
               hunkStart,
               hunkEnd,
               this.rangeStart,
-              this.rangeEnd
+              this.rangeEnd,
+              this.currentFile.isCached
             )
             this.stageHunk(hunk)
           }
@@ -138,7 +139,8 @@ export default Vue.extend({
       hunkStart: number,
       hunkEnd: number,
       rangeStart: number,
-      rangeEnd: number
+      rangeEnd: number,
+      isCached: boolean
     ): string[] {
       const lines: string[] = []
       let del = 0
@@ -168,11 +170,11 @@ export default Vue.extend({
           return
         }
 
-        // 選択範囲外のdelは変更なしに戻す
-        if (v.type === 'del') {
+        // 選択範囲外は変更なしにする
+        if (v.type === (isCached ? 'ins' : 'del')) {
           del++
           ins++
-          lines.push(v.text.replace(/^-/, ' '))
+          lines.push(v.text.replace(/^[+-]/, ' '))
         }
       })
 
