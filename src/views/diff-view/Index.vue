@@ -16,6 +16,7 @@
 import { remote } from 'electron'
 import Vue from 'vue'
 import Git from '@/scripts/Git'
+import watch from '@/scripts/watch'
 import MergeBranchModal from '@/views/home/modals/MergeBranchModal.vue'
 import FileList from './FileList.vue'
 import DiffOptions from './DiffOptions.vue'
@@ -49,11 +50,14 @@ export default Vue.extend({
   mounted() {
     window.addEventListener('focus', this.refresh)
 
-    // ウィンドウがアクティブじゃない時、定期的に更新
-    window.setInterval(() => {
-      if (document.hasFocus()) return
-      this.refresh()
-    }, 5000)
+    // ファイルが変更されたら更新
+    const watcher = watch(this.repo.basePath, this.refresh)
+
+    // ホットリロードで複数回登録されてしまうので、都度解除する
+    this.$once('hook:beforeDestroy', () => {
+      window.removeEventListener('focus', this.refresh)
+      watcher.close()
+    })
 
     // クローズ時にウィンドウ位置を保存
     window.addEventListener('beforeunload', () => {

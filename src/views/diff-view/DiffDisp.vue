@@ -56,17 +56,12 @@ export default Vue.extend({
     }
   },
   watch: {
-    currentFile: {
-      deep: true,
-      handler() {
-        this.generateDiff()
-      }
-    },
     'currentFile.path': function() {
       // スクロール位置をリセット
       this.$el.scrollTop = 0
       this.$el.scrollLeft = 0
     },
+    'currentFile.timestamp': 'generateDiff',
     'diffOptions.ignoreWhitespace': 'generateDiff'
   },
   methods: {

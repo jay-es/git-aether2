@@ -21,6 +21,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import Git from '@/scripts/Git'
+import watch from '@/scripts/watch'
 import PathName from './ReposTableRowPathName.vue'
 import LocalBranchList from './ReposTableRowLocalBranchList.vue'
 import TrackingBranchList from './ReposTableRowTrackingBranchList.vue'
@@ -51,15 +52,12 @@ export default Vue.extend({
     run()
     window.addEventListener('focus', run)
 
-    // ウィンドウがアクティブじゃない時、定期的に更新
-    const timerId = window.setInterval(() => {
-      if (document.hasFocus()) return
-      run()
-    }, 10 * 1000)
+    // ファイルが変更されたら更新
+    const watcher = watch(this.repo.basePath, run)
 
     this.$once('hook:beforeDestroy', () => {
       window.removeEventListener('focus', run)
-      window.clearInterval(timerId)
+      watcher.close()
     })
   },
   methods: {
