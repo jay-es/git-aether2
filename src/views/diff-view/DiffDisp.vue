@@ -57,10 +57,13 @@ export default Vue.extend({
   },
   watch: {
     'currentFile.path': function() {
+      document.body.classList.add('in-progress')
+
       // スクロール位置をリセット
       const unwatch = this.$watch('diffLines', () => {
         this.$el.scrollTop = 0
         this.$el.scrollLeft = 0
+        document.body.classList.remove('in-progress')
         unwatch()
       })
     },

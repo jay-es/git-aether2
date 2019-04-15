@@ -29,6 +29,10 @@ body {
   ::-webkit-scrollbar-corner {
     background-color: hsla(0, 0, 50, 0.1);
   }
+
+  &.in-progress * {
+    cursor: progress !important;
+  }
 }
 
 a {
