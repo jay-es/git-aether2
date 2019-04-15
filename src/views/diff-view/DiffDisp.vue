@@ -3,8 +3,8 @@
     <div v-if="!diffLines.length" class="simple-diff">
       <code class="simple-diff-col">No Diff</code>
     </div>
-    <div v-else-if="isTooMany" class="simple-diff">
-      <code class="simple-diff-col">Too Many Diffs</code>
+    <div v-else-if="isTooLarge" class="simple-diff">
+      <code class="simple-diff-col">Too Large Diff</code>
     </div>
     <diff-disp-table
       v-else
@@ -38,13 +38,11 @@ export default Vue.extend({
   },
   data() {
     return {
-      diffLines: [] as DiffLine[]
+      diffLines: [] as DiffLine[],
+      isTooLarge: false
     }
   },
   computed: {
-    isTooMany(): boolean {
-      return this.diffLines.reduce((acc, v) => acc + v.text.length, 0) > 1e6
-    },
     tabClass(): string {
       return `tab-size-${this.diffOptions.tabSize}`
     },
@@ -90,6 +88,7 @@ export default Vue.extend({
 
       if (!diffText) {
         this.diffLines = []
+        this.isTooLarge = false
         return
       }
 
@@ -98,6 +97,7 @@ export default Vue.extend({
         '-': 'del'
       }
 
+      this.isTooLarge = diffText.length > 1e6
       this.diffLines = diffText
         .split('\n')
         .slice(0, -1)
