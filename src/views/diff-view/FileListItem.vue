@@ -92,39 +92,10 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-.wrap {
-  display: flex;
-  flex-direction: column;
-}
-.list-title {
-  margin: 0 0 0.25em;
-}
-.file-list {
-  flex-grow: 1;
-  overflow-x: hidden;
-  overflow-y: auto;
-
-  > li {
-    position: relative;
-
-    &:nth-last-child(n + 2) {
-      margin-bottom: 0;
-    }
-  }
-}
-.file-status {
-  display: inline-block;
-  flex-shrink: 0;
-  margin-right: 0.25em;
-  width: 1em;
-  text-align: center;
-  cursor: pointer;
-}
 .file-path {
   display: inline-flex;
   width: 100%;
   max-width: calc(100% - 30px);
-  cursor: pointer;
   vertical-align: top;
   overflow-x: hidden;
 

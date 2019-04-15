@@ -235,6 +235,7 @@ export default Vue.extend({
 
   > li {
     position: relative;
+    cursor: pointer;
 
     &:nth-last-child(n + 2) {
       margin-bottom: 0;
@@ -247,7 +248,6 @@ export default Vue.extend({
   margin-right: 0.25em;
   width: 1em;
   text-align: center;
-  cursor: pointer;
 }
 .button-wrap {
   margin: 0.75em 0;
