@@ -58,8 +58,11 @@ export default Vue.extend({
   watch: {
     'currentFile.path': function() {
       // スクロール位置をリセット
-      this.$el.scrollTop = 0
-      this.$el.scrollLeft = 0
+      const unwatch = this.$watch('diffLines', () => {
+        this.$el.scrollTop = 0
+        this.$el.scrollLeft = 0
+        unwatch()
+      })
     },
     'currentFile.timestamp': 'generateDiff',
     'diffOptions.ignoreWhitespace': 'generateDiff'
