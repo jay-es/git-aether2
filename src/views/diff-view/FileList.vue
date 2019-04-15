@@ -131,6 +131,9 @@ export default Vue.extend({
       this.$store.commit('diff/setCurrent', { file: targetFile, isCached })
     },
 
+    /**
+     * ステータス更新系
+     */
     // ステータス文字列をFileの形式に変換
     createStatus(line: string): File {
       const index = line.charAt(0)
@@ -164,7 +167,9 @@ export default Vue.extend({
       return this.$set(this.fileList, index, this.createStatus(res))
     },
 
-    // ステージ変更系
+    /**
+     * ステージ変更系
+     */
     async stage(file: File, index: number) {
       // ステージ登録してステータス更新
       await this.repo.stage(file.path)
