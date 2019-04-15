@@ -52,8 +52,10 @@ export default class Git {
     return this.raw(['branch', option, branchName])
   }
 
-  diff(file: string, options: string[]): Promise<string> {
-    return this.raw(['diff', ...options, '--', file])
+  async diff(file: string, options: string[]): Promise<string> {
+    // 差分がないとnullが返ってくる
+    const res = await this.raw(['diff', ...options, '--', file])
+    return res || ''
   }
 
   diffTool(options: string[]): Promise<void> {
@@ -133,7 +135,8 @@ export default class Git {
   /** fileを省略した場合は全ファイル対象 */
   async statusShort(file?: string): Promise<string> {
     // 変更ファイルがないとnullが返ってくる
-    return (await this.raw(['status', '--short', file || ''])) || ''
+    const res = await this.raw(['status', '--short', file || ''])
+    return res || ''
   }
 
   /** fileを省略した場合は全ファイル対象 */

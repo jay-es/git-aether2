@@ -86,12 +86,6 @@ export default Vue.extend({
         ignoreWhitespace ? `-${ignoreWhitespace}` : ''
       ])
 
-      if (!diffText) {
-        this.diffLines = []
-        this.isTooLarge = false
-        return
-      }
-
       const classNames: { [x: string]: string } = {
         '+': 'ins',
         '-': 'del'
