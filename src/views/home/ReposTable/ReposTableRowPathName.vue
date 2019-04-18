@@ -52,7 +52,6 @@ export default Vue.extend({
       const win = new remote.BrowserWindow(
         Object.assign(bounds, {
           icon: __static + '/favicon.ico',
-          parent: remote.getCurrentWindow(),
           autoHideMenuBar: true
         })
       )
