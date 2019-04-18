@@ -65,7 +65,7 @@ export default Vue.extend({
           .join('\n')
 
         this.repo.setLogText(newLogText)
-        this.$emit('change')
+        this.$emit('change', newLogText)
       } catch (e) {
         showError(e.message)
       }

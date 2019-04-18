@@ -19,6 +19,7 @@
 </template>
 
 <script lang="ts">
+import { ipcRenderer } from 'electron'
 import Vue from 'vue'
 import Git from '@/scripts/Git'
 import watch from '@/scripts/watch'
@@ -55,9 +56,22 @@ export default Vue.extend({
     // ファイルが変更されたら更新
     const watcher = watch(this.repo.basePath, run)
 
+    // 子ウィンドウからのイベント
+    const evName = `change:${this.repo.basePath}`
+    const onchange = (event: any, newLogText?: string) => {
+      if (newLogText) {
+        this.repo.setLogText(newLogText)
+      }
+
+      this.refresh()
+    }
+
+    ipcRenderer.addListener(evName, onchange)
+
     this.$once('hook:beforeDestroy', () => {
       window.removeEventListener('focus', run)
       watcher.close()
+      ipcRenderer.removeListener(evName, onchange)
     })
   },
   methods: {

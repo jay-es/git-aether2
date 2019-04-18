@@ -9,7 +9,7 @@
       <button class="block" :disabled="isBtnDisabled" @click="commit">
         Commit
       </button>
-      <branch-menu :repo="repo" />
+      <branch-menu :repo="repo" @change="updateParent" />
       <button class="block commands" @click="commandMenu">Commands</button>
       <button class="block" @click="closeWindow">Close</button>
     </div>
@@ -59,6 +59,7 @@ export default Vue.extend({
         await this.repo.commit(this.commitMessage)
         this.commitMessage = ''
         this.repo.status()
+        this.updateParent()
 
         // コミット対象がDiff表示されていたらクリア
         if (this.currentFile.isCached) {
@@ -80,6 +81,11 @@ export default Vue.extend({
     },
     closeWindow() {
       remote.getCurrentWindow().close()
+    },
+    updateParent(newLogText?: string) {
+      // 親ウィンドウへイベント送信
+      const parent = remote.getCurrentWindow().getParentWindow()
+      parent.webContents.send(`change:${this.repo.basePath}`, newLogText)
     }
   }
 })
