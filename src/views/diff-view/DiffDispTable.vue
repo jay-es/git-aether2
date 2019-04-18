@@ -90,7 +90,7 @@ export default Vue.extend({
 
       // 直前にあるHunkマーカー行
       let hunkStart = 0
-      for (let i = lineNo; --i; ) {
+      for (let i = lineNo; i > 0; i--) {
         if (this.orgDiffLines[i].type !== 'hunk') continue
         hunkStart = i
         break
