@@ -1,14 +1,14 @@
 <template>
-  <div class="diff-disp" :class="tabClass">
-    <div v-if="!diffLines.length" class="simple-diff">
-      <code class="simple-diff-col">No Diff</code>
+  <div class="diff-disp-wrap" :class="tabClass">
+    <div v-if="!diffLines.length" class="diff-disp">
+      <code class="diff-disp-text">No Diff</code>
     </div>
-    <div v-else-if="isTooLarge" class="simple-diff">
-      <code class="simple-diff-col">Too Large Diff</code>
+    <div v-else-if="isTooLarge" class="diff-disp">
+      <code class="diff-disp-text">Too Large Diff</code>
     </div>
     <diff-disp-table
       v-else
-      class="simple-diff"
+      class="diff-disp"
       :diff-lines="diffLines"
       :repo="repo"
     />
@@ -121,17 +121,20 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-.diff-disp {
+.diff-disp-wrap {
   background-color: var(--diff-bgColor);
   border: 1px solid var(--borderColor);
   overflow: auto;
 }
-.simple-diff {
+.diff-disp {
   margin: 0.5em 0;
-  border-collapse: collapse;
-  min-width: 100%;
   font-size: 12px;
 }
+.diff-disp-text {
+  padding: 0 0.5em;
+  white-space: pre;
+}
+
 .tab-size-2 {
   tab-size: 2;
 }
@@ -140,10 +143,5 @@ export default Vue.extend({
 }
 .tab-size-8 {
   tab-size: 8;
-}
-
-.simple-diff-col {
-  padding: 0 0.5em;
-  white-space: pre;
 }
 </style>
