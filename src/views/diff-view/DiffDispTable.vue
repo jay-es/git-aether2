@@ -203,7 +203,7 @@ export default Vue.extend({
         this.$store.commit('diff/setCurrentTimestamp')
         this.repo.status()
       } catch (e) {
-        showError(e.message)
+        showError(e.message, fs.readFileSync(tmpFilename, 'utf8'))
       }
 
       fs.unlinkSync(tmpFilename)
