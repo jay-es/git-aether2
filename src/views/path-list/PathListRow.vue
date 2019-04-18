@@ -57,6 +57,7 @@ export default Vue.extend({
   },
   watch: {
     'rowItem.directory': {
+      // async なので computed にできない
       async handler(v) {
         this.caution = v ? await new Git(v).init() : ''
       },
