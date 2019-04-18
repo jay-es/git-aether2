@@ -111,6 +111,11 @@ export default Vue.extend({
         this.rangeEnd = lineNo
       }
 
+      // 選択範囲に変更があるかどうか
+      const hasChange = this.orgDiffLines
+        .slice(this.rangeStart, this.rangeEnd + 1)
+        .some(v => v.type === 'ins' || v.type === 'del')
+
       const stageLabel = this.currentFile.isCached ? 'Unstage' : 'Stage'
       const lineLabel = this.rangeStart === this.rangeEnd ? 'Line' : 'Lines'
 
@@ -125,7 +130,10 @@ export default Vue.extend({
         },
         {
           label: `${stageLabel} ${lineLabel} For Commit`,
-          enabled: this.rangeStart >= hunkStart && this.rangeEnd <= hunkEnd,
+          enabled:
+            hasChange &&
+            this.rangeStart >= hunkStart &&
+            this.rangeEnd <= hunkEnd,
           click: () => {
             const hunk = this.makeHunk(
               hunkStart,
