@@ -3,9 +3,9 @@
     <tr
       v-for="(line, i) in diffLines"
       :key="i"
-      @mousedown.left="onMousedown(i)"
-      @mouseup.left="onMouseup(i)"
-      @contextmenu="popupMenu(i)"
+      @mousedown.left="onMousedown(line.num)"
+      @mouseup.left="onMouseup(line.num)"
+      @contextmenu="popupMenu(line.num)"
       @mousedown.right.prevent
     >
       <template v-if="line.type === 'header' || line.type === 'hunk'">

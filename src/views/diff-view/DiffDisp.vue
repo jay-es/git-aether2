@@ -22,6 +22,7 @@ import { CurrentFile, DiffOptions } from '@/store/diff'
 import DiffDispTable from './DiffDispTable.vue'
 
 export interface DiffLine {
+  num: number
   text: string
   type: string
 }
@@ -95,22 +96,25 @@ export default Vue.extend({
       this.diffLines = diffText
         .split('\n')
         .slice(0, -1)
-        .map((text: string, i: number) => {
+        .map((text: string, num: number) => {
           if (text.startsWith('@@')) {
             return {
+              num,
               text,
               type: 'hunk'
             }
           }
 
-          if (i < 5) {
+          if (num < 5) {
             return {
+              num,
               text,
               type: 'header'
             }
           }
 
           return {
+            num,
             text,
             type: classNames[text.charAt(0)] || ''
           }
