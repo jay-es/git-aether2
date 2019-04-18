@@ -41,6 +41,10 @@ export default Vue.extend({
       type: Array as () => DiffLine[],
       required: true
     },
+    orgDiffLines: {
+      type: Array as () => DiffLine[],
+      required: true
+    },
     repo: {
       type: Object as () => Git,
       required: true
@@ -87,15 +91,15 @@ export default Vue.extend({
       // 直前にあるHunkマーカー行
       let hunkStart = 0
       for (let i = lineNo; --i; ) {
-        if (this.diffLines[i].type !== 'hunk') continue
+        if (this.orgDiffLines[i].type !== 'hunk') continue
         hunkStart = i
         break
       }
 
       // 直後にあるHunkマーカー行（なければ最終行）
-      let hunkEnd = this.diffLines.length
+      let hunkEnd = this.orgDiffLines.length
       for (let i = lineNo; i < hunkEnd; i++) {
-        if (this.diffLines[i].type !== 'hunk') continue
+        if (this.orgDiffLines[i].type !== 'hunk') continue
         hunkEnd = i
         break
       }
@@ -116,7 +120,7 @@ export default Vue.extend({
           enabled: hunkStart > 0,
           click: () =>
             this.stageHunk(
-              this.diffLines.slice(hunkStart, hunkEnd).map(v => v.text)
+              this.orgDiffLines.slice(hunkStart, hunkEnd).map(line => line.text)
             )
         },
         {
@@ -146,40 +150,40 @@ export default Vue.extend({
       let del = 0
       let ins = 0
 
-      this.diffLines.forEach((v, i) => {
+      this.orgDiffLines.forEach((line, i) => {
         // コード範囲外なら終了
         if (i <= hunkStart || i > hunkEnd) return
 
         // 差分がない
-        if (!v.type) {
+        if (!line.type) {
           del++
           ins++
-          lines.push(v.text)
+          lines.push(line.text)
           return
         }
 
         // 選択範囲内
         if (i >= rangeStart && i <= rangeEnd) {
-          if (v.type === 'del') {
+          if (line.type === 'del') {
             del++
-          } else if (v.type === 'ins') {
+          } else if (line.type === 'ins') {
             ins++
           }
 
-          lines.push(v.text)
+          lines.push(line.text)
           return
         }
 
         // 選択範囲外は変更なしにする
-        if (v.type === (isCached ? 'ins' : 'del')) {
+        if (line.type === (isCached ? 'ins' : 'del')) {
           del++
           ins++
-          lines.push(v.text.replace(/^[+-]/, ' '))
+          lines.push(line.text.replace(/^[+-]/, ' '))
         }
       })
 
       // Hunkヘッダ作成
-      const header = this.diffLines[hunkStart].text.replace(
+      const header = this.orgDiffLines[hunkStart].text.replace(
         /^(@@ -\d+,)\d+( \+\d+,)\d+( .*)$/,
         `$1${del}$2${ins}$3`
       )
@@ -190,7 +194,9 @@ export default Vue.extend({
     async stageHunk(hunkLines: string[]) {
       // ファイルヘッダ追加
       hunkLines.unshift(
-        ...this.diffLines.filter(v => v.type === 'header').map(v => v.text)
+        ...this.orgDiffLines
+          .filter(line => line.type === 'header')
+          .map(line => line.text)
       )
       hunkLines.push('')
 

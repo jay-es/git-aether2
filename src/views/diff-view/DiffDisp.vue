@@ -6,10 +6,26 @@
     <div v-else-if="isTooLarge" class="diff-disp">
       <code class="diff-disp-text">Too Large Diff</code>
     </div>
+    <div v-else-if="diffOptions.isSplit" class="split-wrap">
+      <div
+        v-for="(lines, side) of splitDiffLines"
+        :key="side"
+        ref="split"
+        @scroll="setScroll($event.target.scrollTop, $event.target.scrollLeft)"
+      >
+        <diff-disp-table
+          class="diff-disp"
+          :diff-lines="lines"
+          :org-diff-lines="diffLines"
+          :repo="repo"
+        />
+      </div>
+    </div>
     <diff-disp-table
       v-else
       class="diff-disp"
       :diff-lines="diffLines"
+      :org-diff-lines="diffLines"
       :repo="repo"
     />
   </div>
@@ -52,6 +68,37 @@ export default Vue.extend({
     },
     diffOptions(): DiffOptions {
       return this.$store.state.diff.diffOptions
+    },
+    splitDiffLines(): DiffLine[][] {
+      const delLines: DiffLine[] = []
+      const insLines: DiffLine[] = []
+
+      this.diffLines.forEach((line, num) => {
+        if (line.type === 'del') {
+          delLines.push(line)
+          return
+        }
+
+        if (line.type === 'ins') {
+          insLines.push(line)
+          return
+        }
+
+        // 行数を同じにする
+        while (delLines.length !== insLines.length) {
+          const less = delLines.length > insLines.length ? insLines : delLines
+          less.push({
+            num,
+            text: ' ',
+            type: 'empty'
+          })
+        }
+
+        delLines.push(line)
+        insLines.push(line)
+      })
+
+      return [delLines, insLines]
     }
   },
   watch: {
@@ -62,6 +109,7 @@ export default Vue.extend({
       const unwatch = this.$watch('diffLines', () => {
         this.$el.scrollTop = 0
         this.$el.scrollLeft = 0
+        this.setScroll(0, 0)
         document.body.classList.remove('in-progress')
         unwatch()
       })
@@ -119,6 +167,13 @@ export default Vue.extend({
             type: classNames[text.charAt(0)] || ''
           }
         })
+    },
+    setScroll(scrollTop: number, scrollLeft: number) {
+      const el = (this.$refs.split || []) as HTMLElement[]
+      el.forEach(v => {
+        v.scrollTop = scrollTop
+        v.scrollLeft = scrollLeft
+      })
     }
   }
 })
@@ -129,6 +184,17 @@ export default Vue.extend({
   background-color: var(--diff-bgColor);
   border: 1px solid var(--borderColor);
   overflow: auto;
+}
+.split-wrap {
+  display: flex;
+  margin: 0 !important;
+  height: 100%;
+
+  > div {
+    width: 50%;
+    overflow-x: auto;
+    overflow-y: scroll;
+  }
 }
 .diff-disp {
   margin: 0.5em 0;
