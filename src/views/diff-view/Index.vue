@@ -103,7 +103,7 @@ export default Vue.extend({
   flex-grow: 1;
 }
 .bottom-col:nth-child(1) {
-  width: 190px;
+  width: 260px;
 }
 .bottom-col:nth-child(2) {
   flex-grow: 1;

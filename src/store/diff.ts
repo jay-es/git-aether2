@@ -10,6 +10,7 @@ export interface CurrentFile {
 
 export interface DiffOptions {
   ignoreWhitespace: string
+  isSplit: boolean
   tabSize: number
 }
 
@@ -22,6 +23,7 @@ const state: DiffState = {
   currentFile: {} as CurrentFile,
   diffOptions: {
     ignoreWhitespace: '',
+    isSplit: false,
     tabSize: 4
   }
 }
@@ -46,6 +48,8 @@ const module: Module<DiffState, RootState> = {
     setOption(state, { key, value }) {
       if (key === 'ignoreWhitespace') {
         state.diffOptions.ignoreWhitespace = value
+      } else if (key === 'isSplit') {
+        state.diffOptions.isSplit = value
       } else if (key === 'tabSize') {
         state.diffOptions.tabSize = value
       } else {

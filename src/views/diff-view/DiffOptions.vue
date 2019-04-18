@@ -31,6 +31,18 @@
         8
       </label>
     </section>
+
+    <section class="inline-block">
+      <legend>Output</legend>
+      <label class="j-label block">
+        <input v-model="isSplit" type="radio" class="j-radio" :value="false" />
+        Unified
+      </label>
+      <label class="j-label block">
+        <input v-model="isSplit" type="radio" class="j-radio" :value="true" />
+        Split
+      </label>
+    </section>
   </div>
 </template>
 
@@ -45,15 +57,23 @@ export default Vue.extend({
     },
     ignoreWS: {
       get(): string {
-        return this.$store.state.diff.diffOptions.ignoreWhitespace
+        return this.diffOptions.ignoreWhitespace
       },
       set(value: string) {
         this.$store.commit('diff/setOption', { key: 'ignoreWhitespace', value })
       }
     },
+    isSplit: {
+      get(): boolean {
+        return this.diffOptions.isSplit
+      },
+      set(value: string) {
+        this.$store.commit('diff/setOption', { key: 'isSplit', value })
+      }
+    },
     tabSize: {
       get(): number {
-        return this.$store.state.diff.diffOptions.tabSize
+        return this.diffOptions.tabSize
       },
       set(value: number) {
         this.$store.commit('diff/setOption', { key: 'tabSize', value })
