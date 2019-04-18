@@ -14,10 +14,10 @@
         </td>
       </template>
       <template v-else>
-        <td class="diff-table-col" :class="line.type">
+        <td class="diff-table-col _num" :class="line.type">
           <code v-text="line.text.charAt(0)" />
         </td>
-        <td class="diff-table-col" :class="line.type">
+        <td class="diff-table-col _txt" :class="line.type">
           <code v-text="line.text.substr(1)" />
         </td>
       </template>
@@ -236,13 +236,13 @@ export default Vue.extend({
   }
 
   // コード部分の1文字目（+/-/スペース）
-  &:nth-last-child(2) {
+  &._num {
     padding-right: 0;
     width: 1px;
     user-select: none;
     color: hsla(0, 0%, 50%, 0.75);
   }
-  &:nth-child(2) {
+  &._txt {
     padding-left: 3px;
   }
 }
