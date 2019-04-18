@@ -21,11 +21,13 @@ interface DiffState {
 
 const state: DiffState = {
   currentFile: {} as CurrentFile,
-  diffOptions: {
-    ignoreWhitespace: '',
-    isSplit: false,
-    tabSize: 4
-  }
+  diffOptions: localStorage.diffOptions
+    ? JSON.parse(localStorage.diffOptions)
+    : {
+        ignoreWhitespace: '',
+        isSplit: false,
+        tabSize: 4
+      }
 }
 
 const module: Module<DiffState, RootState> = {
@@ -55,6 +57,8 @@ const module: Module<DiffState, RootState> = {
       } else {
         throw new Error()
       }
+
+      localStorage.setItem('diffOptions', JSON.stringify(state.diffOptions))
     }
   },
   namespaced: true
