@@ -73,6 +73,18 @@ export default Vue.extend({
       const delLines: DiffLine[] = []
       const insLines: DiffLine[] = []
 
+      // 行数を同じにする （少ない方に empty の行を足す）
+      const equalize = (num?: number) => {
+        while (delLines.length !== insLines.length) {
+          const less = delLines.length > insLines.length ? insLines : delLines
+          less.push({
+            num: num !== undefined ? num : less[less.length - 1].num,
+            text: ' ',
+            type: 'empty'
+          })
+        }
+      }
+
       this.diffLines.forEach((line, num) => {
         if (line.type === 'del') {
           delLines.push(line)
@@ -84,19 +96,13 @@ export default Vue.extend({
           return
         }
 
-        // 行数を同じにする
-        while (delLines.length !== insLines.length) {
-          const less = delLines.length > insLines.length ? insLines : delLines
-          less.push({
-            num,
-            text: ' ',
-            type: 'empty'
-          })
-        }
+        equalize(num)
 
         delLines.push(line)
         insLines.push(line)
       })
+
+      equalize()
 
       return [delLines, insLines]
     }
