@@ -18,7 +18,12 @@
           <code v-text="line.text.charAt(0)" />
         </td>
         <td class="diff-table-col _txt" :class="line.type">
-          <code v-text="line.text.substr(1)" />
+          <template v-if="line.words">
+            <code v-for="(v, j) in line.words" :key="j" :class="v.wordClass">{{
+              v.wordText
+            }}</code>
+          </template>
+          <code v-else v-text="line.text.substr(1)" />
         </td>
       </template>
     </tr>
@@ -33,7 +38,7 @@ import Vue from 'vue'
 import Git from '@/scripts/Git'
 import { showError } from '@/scripts/electronDialog'
 import { CurrentFile, DiffOptions } from '@/store/diff'
-import { DiffLine } from './DiffDisp.vue'
+import { DiffLine } from './createDiffLines'
 
 export default Vue.extend({
   props: {
@@ -234,6 +239,7 @@ export default Vue.extend({
 .diff-table-col {
   padding: 0 0.5em;
   white-space: pre;
+  line-height: 1.25;
 
   &.ins {
     background-color: var(--diff-bgColor-ins);
@@ -259,5 +265,13 @@ export default Vue.extend({
   &._txt {
     padding-left: 3px;
   }
+}
+
+// 行全体(only-child) ではない wordDiff ブロックに背景色
+.word-del:not(:only-child) {
+  background-color: var(--diff-bgColor-del-word);
+}
+.word-ins:not(:only-child) {
+  background-color: var(--diff-bgColor-ins-word);
 }
 </style>

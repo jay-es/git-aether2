@@ -36,12 +36,7 @@ import Vue from 'vue'
 import Git from '@/scripts/Git'
 import { CurrentFile, DiffOptions } from '@/store/diff'
 import DiffDispTable from './DiffDispTable.vue'
-
-export interface DiffLine {
-  num: number
-  text: string
-  type: string
-}
+import createDiffLines, { DiffLine } from './createDiffLines'
 
 export default Vue.extend({
   components: {
@@ -136,43 +131,20 @@ export default Vue.extend({
         })
       }
 
-      const diffText = await this.repo.diff(this.currentFile.path, [
+      const diffArgs = [
         isUntracked ? 'HEAD' : isCached ? '--cached' : '',
         ignoreWhitespace ? `-${ignoreWhitespace}` : ''
+      ]
+
+      const diffText = await this.repo.diff(this.currentFile.path, diffArgs)
+      const wordDiffText = await this.repo.diff(this.currentFile.path, [
+        '--word-diff=porcelain',
+        '--word-diff-regex=\\w+|\\W',
+        ...diffArgs
       ])
 
-      const classNames: { [x: string]: string } = {
-        '+': 'ins',
-        '-': 'del'
-      }
-
       this.isTooLarge = diffText.length > 1e6
-      this.diffLines = diffText
-        .split('\n')
-        .slice(0, -1)
-        .map((text: string, num: number) => {
-          if (text.startsWith('@@')) {
-            return {
-              num,
-              text,
-              type: 'hunk'
-            }
-          }
-
-          if (num < 5) {
-            return {
-              num,
-              text,
-              type: 'header'
-            }
-          }
-
-          return {
-            num,
-            text,
-            type: classNames[text.charAt(0)] || ''
-          }
-        })
+      this.diffLines = createDiffLines(diffText, wordDiffText)
     },
     setScroll(scrollTop: number, scrollLeft: number) {
       const el = (this.$refs.split || []) as HTMLElement[]
