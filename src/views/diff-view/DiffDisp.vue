@@ -120,19 +120,19 @@ export default Vue.extend({
   },
   methods: {
     async generateDiff() {
-      const { isCached, isUntracked } = this.currentFile
+      const { isCached, isNewFile, isUntracked } = this.currentFile
       const { ignoreWhitespace } = this.diffOptions
 
-      // 新規ファイルの場合、一時的にワークツリーに登録してすぐ解除
+      // 新規ファイルの場合、ワークツリーに登録
       if (isUntracked) {
         await this.repo.addN(this.currentFile.path)
         setTimeout(() => {
-          this.repo.unstage(this.currentFile.path)
+          this.repo.status()
         })
       }
 
       const diffArgs = [
-        isUntracked ? 'HEAD' : isCached ? '--cached' : '',
+        isNewFile ? 'HEAD' : isCached ? '--cached' : '',
         ignoreWhitespace ? `-${ignoreWhitespace}` : ''
       ]
 

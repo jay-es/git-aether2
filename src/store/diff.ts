@@ -3,6 +3,7 @@ import { RootState } from './index'
 
 export interface CurrentFile {
   path: string
+  isNewFile: boolean
   isCached: boolean
   isUntracked: boolean
   timestamp: number
@@ -38,8 +39,9 @@ const module: Module<DiffState, RootState> = {
     },
     setCurrent(state, { file, isCached }) {
       state.currentFile = {
-        isCached: isCached,
-        isUntracked: file.index === '?',
+        isCached,
+        isNewFile: file.workTree === '?' || file.workTree === 'A',
+        isUntracked: file.workTree === '?',
         path: file.path,
         timestamp: Date.now()
       }
