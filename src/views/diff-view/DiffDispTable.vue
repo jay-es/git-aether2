@@ -167,6 +167,12 @@ export default Vue.extend({
         // コード範囲外なら終了
         if (i <= hunkStart || i > hunkEnd) return
 
+        // ファイル末尾の注意文は行数としてカウントしない
+        if (line.text === '\\ No newline at end of file') {
+          lines.push(line.text)
+          return
+        }
+
         // 差分がない
         if (!line.type) {
           del++

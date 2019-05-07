@@ -80,13 +80,16 @@ export default Vue.extend({
         }
       }
 
-      this.diffLines.forEach((line, num) => {
-        if (line.type === 'del') {
+      this.diffLines.forEach((line, num, arr) => {
+        // '\ No newline at end of file' は前の行に合わせる
+        const lineType = (line.text[0] === '\\' ? arr[num - 1] : line).type
+
+        if (lineType === 'del') {
           delLines.push(line)
           return
         }
 
-        if (line.type === 'ins') {
+        if (lineType === 'ins') {
           insLines.push(line)
           return
         }
