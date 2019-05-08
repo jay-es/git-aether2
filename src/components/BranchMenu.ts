@@ -39,7 +39,7 @@ export default Vue.extend({
       const message = force
         ? `The branch '${branchName}' is not fully merged.\n` +
           'Recovering deleted branches is difficult.\nDelete this branch?'
-        : 'Delete this branch?'
+        : `Delete this branch?\n'${branchName}'`
 
       if (!confirmDialog(message)) return
 
