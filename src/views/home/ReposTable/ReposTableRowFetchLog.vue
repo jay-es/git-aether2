@@ -31,8 +31,11 @@ export default Vue.extend({
   },
   created() {
     const run = () => window.setTimeout(this.fetch, this.rowIndex * 600)
-    window.setTimeout(run, 1000)
     const timerId = window.setInterval(run, 5 * 60000)
+
+    if (process.env.NODE_ENV === 'production') {
+      window.setTimeout(run, 1000)
+    }
 
     this.$once('hook:beforeDestroy', () => {
       window.clearInterval(timerId)
