@@ -49,8 +49,14 @@ export default Vue.extend({
       return this.$store.state.diff.currentFile
     },
     isBtnDisabled(): boolean {
-      const { staged } = this.repo.statusResult
-      return !staged || !staged.length || !this.commitMessage
+      const { files } = this.repo.statusResult
+
+      return (
+        !this.commitMessage ||
+        !files ||
+        !files.length ||
+        files.every(file => file.index === ' ' || file.index === '?')
+      )
     }
   },
   methods: {
