@@ -2,18 +2,9 @@
   <div class="diff-file-list" tabindex="-1" @keydown="moveCursor($event.key)">
     <p class="list-title">Unstaged Changes</p>
     <ul class="j-list file-list">
-      <li
-        v-for="(file, i) of fileList"
-        v-show="file.hasUnstaged"
-        :key="file.path"
-      >
-        <a class="file-status" @click="stage(file, i)">{{ file.workTree }}</a>
-        <list-item
-          :file="file"
-          :is-cached="false"
-          :repo="repo"
-          @change="updateAllFileStatus"
-        />
+      <li v-for="file of fileList" v-show="file.hasUnstaged" :key="file.path">
+        <a class="file-status" @click="stage(file)">{{ file.working_dir }}</a>
+        <list-item :file="file" :is-cached="false" :repo="repo" />
       </li>
     </ul>
 
@@ -24,18 +15,9 @@
 
     <p class="list-title">Staged Changes (Will Commit)</p>
     <ul class="j-list file-list">
-      <li
-        v-for="(file, i) of fileList"
-        v-show="file.hasStaged"
-        :key="file.path"
-      >
-        <a class="file-status" @click="unstage(file, i)">{{ file.index }}</a>
-        <list-item
-          :file="file"
-          :is-cached="true"
-          :repo="repo"
-          @change="updateAllFileStatus"
-        />
+      <li v-for="file of fileList" v-show="file.hasStaged" :key="file.path">
+        <a class="file-status" @click="unstage(file)">{{ file.index }}</a>
+        <list-item :file="file" :is-cached="true" :repo="repo" />
       </li>
     </ul>
   </div>
@@ -43,13 +25,13 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import Git from '@/scripts/Git'
+import Git, { StatusResult } from '@/scripts/Git'
 import { CurrentFile } from '@/store/diff'
 import ListItem from './FileListItem.vue'
 
 export interface File {
   index: string // ステージ済みの記号
-  workTree: string // 未ステージの記号
+  working_dir: string // 未ステージの記号
   path: string
   dirName: string
   fileName: string
@@ -78,11 +60,22 @@ export default Vue.extend({
     }
   },
   watch: {
-    'repo.statusResult': {
-      deep: true,
-      handler() {
-        this.updateAllFileStatus()
-      }
+    'repo.statusResult': function(newVal: StatusResult) {
+      this.fileList = newVal.files
+        .map(({ index, path, working_dir }) => {
+          const lastIndex = path.lastIndexOf('/') // 最後のパス区切りの位置
+
+          return {
+            index,
+            working_dir,
+            path,
+            dirName: lastIndex === -1 ? '' : path.substr(0, lastIndex),
+            fileName: lastIndex === -1 ? path : path.substr(lastIndex),
+            hasUnstaged: working_dir !== ' ',
+            hasStaged: index !== ' ' && index !== '?'
+          }
+        })
+        .sort((a, b) => (a.path.toLowerCase() > b.path.toLowerCase() ? 1 : -1))
     }
   },
   methods: {
@@ -132,71 +125,40 @@ export default Vue.extend({
     },
 
     /**
-     * ステータス更新系
-     */
-    // ステータス文字列をFileの形式に変換
-    createStatus(line: string): File {
-      const index = line.charAt(0)
-      const workTree = line.charAt(1)
-      const path = line.substr(3).trim() // 1行の場合、最後に改行文字があるので
-      const lastIndex = path.lastIndexOf('/') // 最後のパス区切りの位置
-
-      return {
-        index,
-        workTree,
-        path,
-        dirName: lastIndex === -1 ? '' : path.substr(0, lastIndex),
-        fileName: lastIndex === -1 ? path : path.substr(lastIndex),
-        hasUnstaged: workTree !== ' ',
-        hasStaged: index !== ' ' && index !== '?'
-      }
-    },
-    // 全ファイルステータス更新
-    async updateAllFileStatus() {
-      const res = await this.repo.statusShort()
-
-      this.fileList = res
-        .split('\n')
-        .filter(v => v)
-        .map(line => this.createStatus(line))
-        .sort((a, b) => (a.path.toLowerCase() > b.path.toLowerCase() ? 1 : -1))
-    },
-    // 1ファイルステータス更新 （毎回全ファイル更新してしまうと反応が遅い & 連続クリックで表示くずれる）
-    async updateFileStatus(file: File, index: number) {
-      const res = await this.repo.statusShort(file.path)
-      return this.$set(this.fileList, index, this.createStatus(res))
-    },
-
-    /**
      * ステージ変更系
      */
-    async stage(file: File, index: number) {
+    async stage(file: File) {
+      file.hasStaged = true
+      file.hasUnstaged = false
+
       // ステージ登録してステータス更新
-      await this.repo.stage(file.path)
-      const saved = await this.updateFileStatus(file, index)
-      this.repo.status()
+      this.repo.stage(file.path) // status のタイムスタンプのため await をつけない
+      await this.repo.status()
 
       // カレントに反映
       if (file.path === this.currentFile.path) {
-        this.$store.commit('diff/setCurrent', { file: saved, isCached: true })
+        file = this.fileList.find(v => v.path === file.path) as File
+        this.$store.commit('diff/setCurrent', { file, isCached: true })
       }
     },
-    async unstage(file: File, index: number) {
+    async unstage(file: File) {
+      file.hasStaged = false
+      file.hasUnstaged = true
+
       // ステージ解除してステータス更新
-      await this.repo.unstage(file.path)
-      const saved = await this.updateFileStatus(file, index)
-      this.repo.status()
+      this.repo.unstage(file.path) // status のタイムスタンプのため await をつけない
+      await this.repo.status()
 
       // カレントに反映
       if (file.path === this.currentFile.path) {
-        this.$store.commit('diff/setCurrent', { file: saved, isCached: false })
+        file = this.fileList.find(v => v.path === file.path) as File
+        this.$store.commit('diff/setCurrent', { file, isCached: false })
       }
     },
     async stageAll() {
       // ステージ登録してステータス更新
-      await this.repo.stage()
-      await this.updateAllFileStatus()
-      this.repo.status()
+      this.repo.stage() // status のタイムスタンプのため await をつけない
+      await this.repo.status()
 
       // カレントに反映
       this.fileList.forEach(file => {
@@ -206,9 +168,8 @@ export default Vue.extend({
     },
     async unstageAll() {
       // ステージ解除してステータス更新
-      await this.repo.unstage()
-      await this.updateAllFileStatus()
-      this.repo.status()
+      this.repo.unstage() // status のタイムスタンプのため await をつけない
+      await this.repo.status()
 
       // カレントに反映
       this.fileList.forEach(file => {

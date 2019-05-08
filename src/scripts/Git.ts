@@ -1,6 +1,8 @@
 import { existsSync, statSync } from 'fs'
 import simplegit from 'simple-git/promise'
 
+export interface StatusResult extends simplegit.StatusResult {}
+
 export default class Git {
   public localBranchNames = [] as string[]
   public trackingBranchNames = [] as string[]
@@ -8,6 +10,7 @@ export default class Git {
   public statusResult = {} as simplegit.StatusResult
   public logText = ''
   private git = {} as simplegit.SimpleGit
+  private lastStatusRequested = 0
 
   constructor(
     public readonly basePath: string,
@@ -129,14 +132,13 @@ export default class Git {
   }
 
   async status(): Promise<void> {
-    this.statusResult = await this.git.status()
-  }
+    const lastStatusRequested = (this.lastStatusRequested = Date.now())
+    const tmpStatusResult = await this.git.status()
 
-  /** fileを省略した場合は全ファイル対象 */
-  async statusShort(file?: string): Promise<string> {
-    // 変更ファイルがないとnullが返ってくる
-    const res = await this.raw(['status', '--short', file || ''])
-    return res || ''
+    // 別のリスエストが開始されていたらプロパティを更新しない（表示のガタつき防止）
+    if (lastStatusRequested === this.lastStatusRequested) {
+      this.statusResult = tmpStatusResult
+    }
   }
 
   /** fileを省略した場合は全ファイル対象 */

@@ -40,8 +40,8 @@ const module: Module<DiffState, RootState> = {
     setCurrent(state, { file, isCached }) {
       state.currentFile = {
         isCached,
-        isNewFile: file.workTree === '?' || file.workTree === 'A',
-        isUntracked: file.workTree === '?',
+        isNewFile: file.working_dir === '?' || file.working_dir === 'A',
+        isUntracked: file.working_dir === '?',
         path: file.path,
         timestamp: Date.now()
       }

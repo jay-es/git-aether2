@@ -62,7 +62,7 @@ export default Vue.extend({
             if (!confirmDialog('Reset changes?')) return
 
             // 新規ファイルなら削除
-            if (this.file.workTree === '?') {
+            if (this.file.working_dir === '?') {
               const fullpath = resolve(this.repo.basePath, this.file.path)
               shell.moveItemToTrash(fullpath)
               this.$store.commit('diff/resetCurrent')
