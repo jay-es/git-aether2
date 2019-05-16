@@ -61,11 +61,19 @@ export default Vue.extend({
           click: () => {
             if (!confirmDialog('Reset changes?')) return
 
+            // 画面の更新
+            this.file.hasUnstaged = false
+            if (this.isCurrent) {
+              this.$store.commit('diff/resetCurrent')
+            }
+
+            const workDir = this.file.working_dir
+
             // 新規ファイルなら削除
-            if (this.file.working_dir === '?') {
+            if (workDir === '?' || workDir === 'A') {
               const fullpath = resolve(this.repo.basePath, this.file.path)
               shell.moveItemToTrash(fullpath)
-              this.$store.commit('diff/resetCurrent')
+              this.repo.unstage(this.file.path)
               return
             }
 

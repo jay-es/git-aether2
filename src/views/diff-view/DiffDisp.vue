@@ -123,12 +123,17 @@ export default Vue.extend({
   },
   methods: {
     async generateDiff() {
-      const { isCached, isNewFile, isUntracked } = this.currentFile
+      const { isCached, isNewFile, isUntracked, path } = this.currentFile
       const { ignoreWhitespace } = this.diffOptions
+
+      if (!path) {
+        this.diffLines = []
+        return
+      }
 
       // 新規ファイルの場合、ワークツリーに登録
       if (isUntracked) {
-        await this.repo.addN(this.currentFile.path)
+        await this.repo.addN(path)
         setTimeout(() => {
           this.repo.status()
         })
@@ -139,8 +144,8 @@ export default Vue.extend({
         ignoreWhitespace ? `-${ignoreWhitespace}` : ''
       ]
 
-      const diffText = await this.repo.diff(this.currentFile.path, diffArgs)
-      const wordDiffText = await this.repo.diff(this.currentFile.path, [
+      const diffText = await this.repo.diff(path, diffArgs)
+      const wordDiffText = await this.repo.diff(path, [
         '--word-diff=porcelain',
         '--word-diff-regex=\\w+|\\W',
         ...diffArgs
