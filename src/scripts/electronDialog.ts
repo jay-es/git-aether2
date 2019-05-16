@@ -8,8 +8,9 @@ export const showError = (message: string, detail?: string) => {
   })
 }
 
-export const confirmDialog = (message: string) => {
+export const confirmDialog = (message: string, detail?: string) => {
   const res = remote.dialog.showMessageBox(remote.getCurrentWindow(), {
+    detail,
     message,
     type: 'question',
     buttons: ['Yes', 'No']

@@ -59,7 +59,7 @@ export default Vue.extend({
           label: 'Discard Changes',
           enabled: !this.file.hasStaged,
           click: () => {
-            if (!confirmDialog('Reset changes?')) return
+            if (!confirmDialog('Reset changes?', this.file.path)) return
 
             // 画面の更新
             this.file.hasUnstaged = false
