@@ -59,7 +59,7 @@ export default Vue.extend({
       this.toggleAnimation(true)
 
       try {
-        const res = await this.repo.pull(remote, branch)
+        const res = await this.repo.pull(remote, branch, { '--ff-only': null })
         const newLogText = Object.entries(res.summary)
           .map(([k, v]) => `${k}: ${v}`)
           .join('\n')
