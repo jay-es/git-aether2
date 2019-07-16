@@ -1,10 +1,17 @@
 <template>
   <div class="wrap">
-    <textarea
-      v-model="commitMessage"
-      class="j-input"
-      placeholder="Commit Message"
-    />
+    <div class="message">
+      <textarea
+        v-model="commitMessage"
+        class="j-input"
+        placeholder="Commit Message"
+      />
+      <label class="j-label">
+        <input v-model="shouldCheckNum" type="checkbox" class="j-checkbox" />
+        Should contain number of branch name
+      </label>
+    </div>
+
     <div class="buttons">
       <button class="block" :disabled="isBtnDisabled" @click="commit">
         Commit
@@ -38,7 +45,8 @@ export default Vue.extend({
   },
   data() {
     return {
-      commitMessage: ''
+      commitMessage: '',
+      shouldCheckNum: true
     }
   },
   computed: {
@@ -52,11 +60,22 @@ export default Vue.extend({
       const { files } = this.repo.statusResult
 
       return (
-        !this.commitMessage ||
+        !this.isMessageValid ||
         !files ||
         !files.length ||
         files.every(file => file.index === ' ' || file.index === '?')
       )
+    },
+    isMessageValid(): boolean {
+      if (!this.commitMessage) return false
+      if (!this.shouldCheckNum) return true
+
+      const { current } = this.repo.statusResult
+
+      const matches = /-(\d+)-/.exec(current)
+      const digits = matches ? matches[1] : ''
+
+      return this.commitMessage.includes(digits)
     }
   },
   methods: {
@@ -100,6 +119,28 @@ export default Vue.extend({
 .wrap {
   display: flex;
 }
+.message {
+  position: relative;
+  flex-grow: 1;
+
+  .j-input {
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    resize: none;
+  }
+
+  .j-label {
+    position: absolute;
+    right: 0.3em;
+    bottom: 0.1em;
+    transition: opacity 0.1s;
+
+    &:not(:hover) {
+      opacity: 0.4;
+    }
+  }
+}
 .buttons {
   margin-left: 6px;
   width: 70px;
@@ -112,11 +153,5 @@ export default Vue.extend({
   padding-right: 0;
   padding-left: 0;
   letter-spacing: -0.5px;
-}
-.j-input {
-  flex-grow: 1;
-  box-sizing: border-box;
-  height: 100%;
-  resize: none;
 }
 </style>
