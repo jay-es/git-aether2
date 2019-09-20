@@ -70,12 +70,10 @@ export default Vue.extend({
       if (!this.commitMessage) return false
       if (!this.shouldCheckNum) return true
 
-      const { current } = this.repo.statusResult
+      const matchCurrent = /-(\d+)-/.exec(this.repo.statusResult.current) || []
+      const matchMessage = /#(\d+) /.exec(this.commitMessage) || []
 
-      const matches = /-(\d+)-/.exec(current)
-      const digits = matches ? matches[1] : ''
-
-      return this.commitMessage.includes(digits)
+      return matchCurrent[1] === matchMessage[1]
     }
   },
   methods: {
