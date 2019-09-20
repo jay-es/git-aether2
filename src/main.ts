@@ -27,5 +27,10 @@ new Vue({
   // クローズ時にウィンドウ位置を保存
   window.addEventListener('beforeunload', () => {
     localStorage.setItem('winPos', JSON.stringify(win.getBounds()))
+
+    // 子ウィンドウをすべて閉じる
+    remote.BrowserWindow.getAllWindows()
+      .filter(w => w !== win)
+      .forEach(w => w.close())
   })
 })(remote.getCurrentWindow())
