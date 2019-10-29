@@ -95,6 +95,7 @@ export default Vue.extend({
 .BranchList {
   display: flex;
   max-width: 90vw;
+  max-height: calc(100vh - 300px);
 }
 .j-select {
   margin: 0 0 0 -1px;
