@@ -55,6 +55,7 @@ export default ModalBase.extend({
       try {
         await this.repo.rename(this.branchName, this.newName)
         this.repo.branch()
+        this.repo.status()
         this.closeModal()
       } catch (e) {
         showError(e.message)

@@ -118,6 +118,7 @@ export default ModalBase.extend({
 
         await this.repo.checkout(['-b', this.newBranchName, this.targetBranch])
         this.repo.branch()
+        this.repo.status()
         this.closeModal()
       } catch (e) {
         showError(e.message)

@@ -2,7 +2,7 @@ import { remote } from 'electron'
 import Vue from 'vue'
 import Git from '@/scripts/Git'
 import { confirmDialog, showError } from '@/scripts/electronDialog'
-import modalController from '@/views/home/modals/modalController'
+import modalController from './modals/modalController'
 
 export interface BranchInfo {
   current: boolean | string
@@ -143,7 +143,7 @@ export default Vue.extend({
       ]
 
       if (this.isCurrentOnly) {
-        menuItems = menuItems.filter(v => v.enabled === branch.current)
+        menuItems = menuItems.filter(v => v.enabled !== !branch.current)
       }
 
       remote.Menu.buildFromTemplate(menuItems).popup()

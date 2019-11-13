@@ -8,7 +8,9 @@
       <diff-options class="bottom-col" />
       <commit-command class="bottom-col" :repo="repo" />
     </div>
+    <create-branch-modal />
     <merge-branch-modal />
+    <rename-branch-modal />
   </section>
 </template>
 
@@ -17,7 +19,9 @@ import { remote } from 'electron'
 import Vue from 'vue'
 import Git from '@/scripts/Git'
 import watch from '@/scripts/watch'
-import MergeBranchModal from '@/views/home/modals/MergeBranchModal.vue'
+import CreateBranchModal from '@/components/modals/CreateBranchModal.vue'
+import MergeBranchModal from '@/components/modals/MergeBranchModal.vue'
+import RenameBranchModal from '@/components/modals/RenameBranchModal.vue'
 import FileList from './FileList.vue'
 import DiffOptions from './DiffOptions.vue'
 import DiffDisp from './DiffDisp.vue'
@@ -29,7 +33,9 @@ export default Vue.extend({
     DiffOptions,
     DiffDisp,
     CommitCommand,
-    MergeBranchModal
+    CreateBranchModal,
+    MergeBranchModal,
+    RenameBranchModal
   },
   data() {
     const basePath = this.$route.query.basePath as string
